@@ -1,0 +1,48 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#e74c3c"/>
+      <stop offset="100%" style="stop-color:#c0392b"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="100" height="100" rx="20" fill="url(#bgGrad)"/>
+
+  <!--
+    Shoe profile (facing right, heel on left):
+    - Heel counter: tall vertical back on left
+    - Heel cap: rounded at top-left
+    - Ankle collar: visible DIP down then back up (the foot opening)
+    - Tongue: rises up from the collar dip
+    - Upper: slopes gently downward toward toe
+    - Toe box: rounds down to sole level at right
+  -->
+  <path d="
+    M 11 64
+    L 11 33
+    Q 12 22 21 22
+    Q 27 18 31 37
+    Q 35 24 46 21
+    Q 59 18 68 23
+    Q 80 28 82 43
+    L 82 64
+    Z"
+    fill="white"/>
+
+  <!-- Sole (slightly thick, rounded ends) -->
+  <rect x="7" y="64" width="84" height="13" rx="6.5" fill="white" opacity="0.86"/>
+
+  <!-- Subtle toe cap darkening -->
+  <path d="M 68 23 Q 80 28 82 43 L 80 64 L 74 64 L 76 43 Q 76 31 69 25 Z"
+        fill="rgba(0,0,0,0.06)"/>
+
+  <!-- Lace area: 3 strips on the vamp/tongue zone -->
+  <rect x="47" y="21" width="3" height="15" rx="1.5" fill="#c0392b" opacity="0.38"/>
+  <rect x="57" y="19" width="3" height="15" rx="1.5" fill="#c0392b" opacity="0.38"/>
+  <rect x="67" y="22" width="3" height="14" rx="1.5" fill="#c0392b" opacity="0.38"/>
+
+  <!-- Collar opening highlight: subtle arc to emphasise the dip -->
+  <path d="M 21 22 Q 28 16 32 37 Q 35 23 46 21"
+        stroke="rgba(200,60,40,0.35)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+</svg>

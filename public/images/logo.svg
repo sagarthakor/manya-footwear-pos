@@ -1,0 +1,49 @@
+<svg viewBox="0 0 310 90" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#e74c3c"/>
+      <stop offset="100%" style="stop-color:#c0392b"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Icon square -->
+  <rect x="0" y="0" width="90" height="90" rx="16" fill="url(#bgGrad)"/>
+
+  <!-- Shoe upper (scaled to fit 90x90 box, with 8px padding each side) -->
+  <path d="
+    M 10 57
+    L 10 30
+    Q 11 20 19 20
+    Q 24 16 28 33
+    Q 31 22 41 19
+    Q 53 16 61 21
+    Q 72 25 74 39
+    L 74 57
+    Z"
+    fill="white"/>
+
+  <!-- Sole -->
+  <rect x="6" y="57" width="76" height="12" rx="6" fill="white" opacity="0.86"/>
+
+  <!-- Toe cap shading -->
+  <path d="M 61 21 Q 72 25 74 39 L 72 57 L 67 57 L 69 39 Q 69 28 63 23 Z"
+        fill="rgba(0,0,0,0.06)"/>
+
+  <!-- Lace strips -->
+  <rect x="42" y="19" width="2.5" height="13" rx="1.2" fill="#c0392b" opacity="0.38"/>
+  <rect x="51" y="17" width="2.5" height="13" rx="1.2" fill="#c0392b" opacity="0.38"/>
+  <rect x="60" y="20" width="2.5" height="12" rx="1.2" fill="#c0392b" opacity="0.38"/>
+
+  <!-- Brand text: Mayank -->
+  <text x="100" y="44"
+        font-family="'Inter','Segoe UI','Helvetica Neue',Arial,sans-serif"
+        font-size="30" font-weight="800" fill="#1a1f36" letter-spacing="-0.5">Mayank</text>
+
+  <!-- Brand text: FOOTWARE -->
+  <text x="102" y="65"
+        font-family="'Inter','Segoe UI','Helvetica Neue',Arial,sans-serif"
+        font-size="15" font-weight="500" fill="#e74c3c" letter-spacing="4.5">FOOTWARE</text>
+
+  <!-- Accent dot -->
+  <circle cx="96" cy="46" r="3" fill="#e74c3c"/>
+</svg>
