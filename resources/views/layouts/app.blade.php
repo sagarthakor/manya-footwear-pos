@@ -450,9 +450,9 @@
         <a href="{{ route('permissions.index') }}" class="nav-link {{ request()->routeIs('permissions.*') ? 'active' : '' }}">
             <i class="bi bi-key-fill"></i> Permissions
         </a>
-        <a href="{{ route('modules.index') }}" class="nav-link {{ request()->routeIs('modules.*') ? 'active' : '' }}">
+        {{-- <a href="{{ route('modules.index') }}" class="nav-link {{ request()->routeIs('modules.*') ? 'active' : '' }}">
             <i class="bi bi-toggles"></i> Modules
-        </a>
+        </a> --}}
         @endif
         <a href="{{ route('settings.index') }}" class="nav-link {{ request()->routeIs('settings.*') ? 'active' : '' }}">
             <i class="bi bi-gear-fill"></i> Settings
