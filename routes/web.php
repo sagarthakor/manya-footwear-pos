@@ -33,6 +33,7 @@ Route::get('/barcode/svg/{barcode}',   [BarcodeController::class, 'svg'])->name(
 Route::middleware('auth')->group(function () {
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/guide',     fn() => view('guide.index'))->name('guide');
 
     // ── POS + Sales (all roles) ────────────────────────────────────────────────
     Route::get('/pos',                          [SaleController::class, 'create'])->name('sales.create');

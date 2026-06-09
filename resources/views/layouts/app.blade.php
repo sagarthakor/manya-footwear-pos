@@ -463,6 +463,9 @@
         @endif
 
         <div class="nav-section">Account</div>
+        <a href="{{ route('guide') }}" class="nav-link {{ request()->routeIs('guide') ? 'active' : '' }}">
+            <i class="bi bi-book-fill"></i> POS Guide
+        </a>
         <a href="{{ route('profile.edit') }}" class="nav-link {{ request()->routeIs('profile.*') ? 'active' : '' }}">
             <i class="bi bi-person-circle"></i> My Profile
         </a>
