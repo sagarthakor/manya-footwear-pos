@@ -140,6 +140,7 @@ class RoleController extends Controller
     private function groupPermissions($permissions)
     {
         return $permissions->groupBy(function ($p) {
+            if ($p->name === 'view purchase price')     return 'Price';
             if (str_starts_with($p->name, 'manage '))  return 'Manage';
             if (str_starts_with($p->name, 'create '))  return 'Create';
             if (str_starts_with($p->name, 'edit '))    return 'Edit';

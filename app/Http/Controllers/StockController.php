@@ -49,10 +49,12 @@ class StockController extends Controller
             return back()->with('error', 'Product not found with barcode: ' . $validated['barcode']);
         }
 
-        DB::transaction(function () use ($product, $validated) {
+        $canSeeCost = auth()->user()->can('view purchase price');
+
+        DB::transaction(function () use ($product, $validated, $canSeeCost) {
             $stockBefore = $product->stock_quantity;
             $product->increment('stock_quantity', $validated['quantity']);
-            if (!empty($validated['purchase_price'])) {
+            if ($canSeeCost && !empty($validated['purchase_price'])) {
                 $product->update(['purchase_price' => $validated['purchase_price']]);
             }
             StockMovement::create([
@@ -62,7 +64,7 @@ class StockController extends Controller
                 'quantity'       => $validated['quantity'],
                 'stock_before'   => $stockBefore,
                 'stock_after'    => $product->stock_quantity,
-                'purchase_price' => $validated['purchase_price'] ?? $product->purchase_price,
+                'purchase_price' => $canSeeCost ? ($validated['purchase_price'] ?? $product->purchase_price) : null,
                 'notes'          => $validated['notes'] ?? 'Stock added via barcode',
             ]);
         });

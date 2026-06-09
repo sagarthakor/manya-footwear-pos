@@ -32,14 +32,20 @@ class DashboardController extends Controller
     /* ── Manager / Admin / Custom Role (merged, permission-aware) ── */
     private function managerView($today, $month, $user)
     {
-        // ── Core sales (always visible to managers) ──────────────
-        $todayRevenue = Sale::whereDate('created_at', $today)->where('status', 'completed')->sum('total_amount');
-        $todayOrders  = Sale::whereDate('created_at', $today)->where('status', 'completed')->count();
-        $todayCashIn  = Sale::whereDate('created_at', $today)->where('status', 'completed')->where('payment_method', 'cash')->sum('total_amount');
-        $todayUpiIn   = Sale::whereDate('created_at', $today)->where('status', 'completed')->where('payment_method', 'upi')->sum('total_amount');
-        $todayCardIn  = Sale::whereDate('created_at', $today)->where('status', 'completed')->whereNotIn('payment_method', ['cash', 'upi'])->sum('total_amount');
-        $monthSales   = Sale::where('created_at', '>=', $month)->where('status', 'completed')->sum('total_amount');
-        $monthOrders  = Sale::where('created_at', '>=', $month)->where('status', 'completed')->count();
+        $canViewSales = $user->can('view sales');
+
+        // ── Core sales (gated by view sales permission) ───────────
+        $todayRevenue = $todayOrders = $todayCashIn = $todayUpiIn = $todayCardIn = 0;
+        $monthSales = $monthOrders = 0;
+        if ($canViewSales) {
+            $todayRevenue = Sale::whereDate('created_at', $today)->where('status', 'completed')->sum('total_amount');
+            $todayOrders  = Sale::whereDate('created_at', $today)->where('status', 'completed')->count();
+            $todayCashIn  = Sale::whereDate('created_at', $today)->where('status', 'completed')->where('payment_method', 'cash')->sum('total_amount');
+            $todayUpiIn   = Sale::whereDate('created_at', $today)->where('status', 'completed')->where('payment_method', 'upi')->sum('total_amount');
+            $todayCardIn  = Sale::whereDate('created_at', $today)->where('status', 'completed')->whereNotIn('payment_method', ['cash', 'upi'])->sum('total_amount');
+            $monthSales   = Sale::where('created_at', '>=', $month)->where('status', 'completed')->sum('total_amount');
+            $monthOrders  = Sale::where('created_at', '>=', $month)->where('status', 'completed')->count();
+        }
         $totalStockItems = Product::where('is_active', true)->sum('stock_quantity');
 
         // ── Purchases (module + permission) ──────────────────────
@@ -148,8 +154,8 @@ class DashboardController extends Controller
             }
         }
 
-        $salesChart  = $this->dailySales(7);
-        $recentSales = Sale::with(['customer', 'user', 'items'])->latest()->limit(8)->get();
+        $salesChart  = $canViewSales ? $this->dailySales(7) : ['labels' => [], 'values' => []];
+        $recentSales = $canViewSales ? Sale::with(['customer', 'user', 'items'])->latest()->limit(8)->get() : collect();
 
         return view('dashboard', compact(
             'todayRevenue', 'todayOrders', 'todayCashIn', 'todayUpiIn', 'todayCardIn', 'todayPurchase',
@@ -167,16 +173,24 @@ class DashboardController extends Controller
     /* ── Cashier ──────────────────────────────────────────── */
     private function cashierView($today, $user)
     {
-        $myRevenue = Sale::whereDate('created_at', $today)->where('user_id', $user->id)->where('status', 'completed')->sum('total_amount');
-        $myOrders  = Sale::whereDate('created_at', $today)->where('user_id', $user->id)->where('status', 'completed')->count();
-        $myItems   = DB::table('sale_items')
-            ->join('sales', 'sale_items.sale_id', '=', 'sales.id')
-            ->whereDate('sales.created_at', $today)
-            ->where('sales.user_id', $user->id)
-            ->where('sales.status', 'completed')
-            ->sum('sale_items.quantity');
-        $myReturns   = SaleReturn::whereDate('created_at', $today)->where('user_id', $user->id)->count();
-        $recentSales = Sale::with(['customer', 'items'])->where('user_id', $user->id)->latest()->limit(8)->get();
+        $canViewSales = $user->can('view sales');
+
+        $myRevenue = $myOrders = $myItems = $myReturns = 0;
+        $recentSales = collect();
+
+        if ($canViewSales) {
+            $myRevenue = Sale::whereDate('created_at', $today)->where('user_id', $user->id)->where('status', 'completed')->sum('total_amount');
+            $myOrders  = Sale::whereDate('created_at', $today)->where('user_id', $user->id)->where('status', 'completed')->count();
+            $myItems   = DB::table('sale_items')
+                ->join('sales', 'sale_items.sale_id', '=', 'sales.id')
+                ->whereDate('sales.created_at', $today)
+                ->where('sales.user_id', $user->id)
+                ->where('sales.status', 'completed')
+                ->sum('sale_items.quantity');
+            $myReturns   = SaleReturn::whereDate('created_at', $today)->where('user_id', $user->id)->count();
+            $recentSales = Sale::with(['customer', 'items'])->where('user_id', $user->id)->latest()->limit(8)->get();
+        }
+
         $lowStockItems = Product::where('is_active', true)
             ->whereColumn('stock_quantity', '<=', 'alert_quantity')
             ->where('stock_quantity', '>', 0)
@@ -191,6 +205,9 @@ class DashboardController extends Controller
 
     public function salesChartApi(\Illuminate\Http\Request $request)
     {
+        if (!auth()->user()->can('view sales')) {
+            return response()->json(['labels' => [], 'values' => []]);
+        }
         $days = (int) ($request->days ?? 7);
         return response()->json($this->dailySales(min($days, 30)));
     }

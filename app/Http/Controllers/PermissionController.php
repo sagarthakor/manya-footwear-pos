@@ -36,6 +36,7 @@ class PermissionController extends Controller
 
         // Group permissions by module prefix
         $grouped = $permissions->groupBy(function ($p) {
+            if ($p->name === 'view purchase price')     return 'Price';
             if (str_starts_with($p->name, 'manage '))  return 'Manage';
             if (str_starts_with($p->name, 'create '))  return 'Create';
             if (str_starts_with($p->name, 'edit '))    return 'Edit';

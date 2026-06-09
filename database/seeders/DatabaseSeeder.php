@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             'view dashboard',
             // Products
             'view products', 'create products', 'edit products', 'delete products',
+            'view purchase price',
             // Categories
             'view categories', 'manage categories',
             // Brands

@@ -297,79 +297,79 @@
             <i class="bi bi-cart3"></i> New Sale / POS
         </a>
 
+        {{-- ── Inventory Section ─────────────────────────────────── --}}
         @php
-            $anyInventory = (\App\Helpers\Module::isActive('add_stock') || \App\Helpers\Module::isActive('stock_movements'))
-                || (auth()->user()->isManager() && (
-                    \App\Helpers\Module::isActive('products') ||
-                    \App\Helpers\Module::isActive('brands') ||
-                    \App\Helpers\Module::isActive('categories') ||
-                    \App\Helpers\Module::isActive('barcodes')
-                ));
+            $user = auth()->user();
+            $canProducts   = $user->can('view products')   && \App\Helpers\Module::isActive('products');
+            $canBrands     = $user->can('manage brands')   && \App\Helpers\Module::isActive('brands');
+            $canCategories = $user->can('manage categories') && \App\Helpers\Module::isActive('categories');
+            $canBarcodes   = $user->can('print barcodes')  && \App\Helpers\Module::isActive('barcodes');
+            $canAddStock   = \App\Helpers\Module::isActive('add_stock');
+            $canStockHist  = \App\Helpers\Module::isActive('stock_movements');
+            $anyInventory  = $canProducts || $canBrands || $canCategories || $canBarcodes || $canAddStock || $canStockHist;
         @endphp
         @if($anyInventory)
         <div class="nav-section">Inventory</div>
         @endif
-        @if(auth()->user()->isManager())
-        @module('products')
+        @if($canProducts)
         <a href="{{ route('products.index') }}" class="nav-link {{ request()->routeIs('products.*') ? 'active' : '' }}">
             <i class="bi bi-box-seam-fill"></i> Products
         </a>
-        @endmodule
-        @module('brands')
+        @endif
+        @if($canBrands)
         <a href="{{ route('brands.index') }}" class="nav-link {{ request()->routeIs('brands.*') ? 'active' : '' }}">
             <i class="bi bi-stars"></i> Brands
         </a>
-        @endmodule
-        @module('categories')
+        @endif
+        @if($canCategories)
         <a href="{{ route('categories.index') }}" class="nav-link {{ request()->routeIs('categories.*') ? 'active' : '' }}">
             <i class="bi bi-tags-fill"></i> Categories
         </a>
-        @endmodule
-        @module('barcodes')
+        @endif
+        @if($canBarcodes)
         <a href="{{ route('barcodes.index') }}" class="nav-link {{ request()->routeIs('barcodes.*') ? 'active' : '' }}">
             <i class="bi bi-upc-scan"></i> Barcodes
         </a>
-        @endmodule
         @endif
-        @module('add_stock')
+        @if($canAddStock)
         <a href="{{ route('stock.add') }}" class="nav-link {{ request()->routeIs('stock.add') ? 'active' : '' }}">
             <i class="bi bi-plus-square-fill"></i> Add Stock
         </a>
-        @endmodule
-        @module('stock_movements')
+        @endif
+        @if($canStockHist)
         <a href="{{ route('stock.index') }}" class="nav-link {{ request()->routeIs('stock.index') ? 'active' : '' }}">
             <i class="bi bi-clock-history"></i> Stock History
         </a>
-        @endmodule
+        @endif
 
+        {{-- ── Sales Section ──────────────────────────────────────── --}}
         @php
-            $anySales = \App\Helpers\Module::isActive('sales_history')
-                || (auth()->user()->isManager() && (
-                    \App\Helpers\Module::isActive('sale_returns') ||
-                    \App\Helpers\Module::isActive('customers')
-                ));
+            $canSalesHist   = \App\Helpers\Module::isActive('sales_history') && $user->can('view sales');
+            $canSaleReturns = $user->can('process sale returns') && \App\Helpers\Module::isActive('sale_returns');
+            $canCustomers   = $user->can('view customers')       && \App\Helpers\Module::isActive('customers');
+            $anySales       = $canSalesHist || $canSaleReturns || $canCustomers;
         @endphp
         @if($anySales)
         <div class="nav-section">Sales</div>
         @endif
-        @module('sales_history')
+        @if($canSalesHist)
         <a href="{{ route('sales.index') }}" class="nav-link {{ request()->routeIs('sales.index') ? 'active' : '' }}">
             <i class="bi bi-receipt"></i> Sales History
         </a>
-        @endmodule
-        @if(auth()->user()->isManager())
-        @module('sale_returns')
+        @endif
+        @if($canSaleReturns)
         <a href="{{ route('sale-returns.index') }}" class="nav-link {{ request()->routeIs('sale-returns.*') ? 'active' : '' }}">
             <i class="bi bi-arrow-return-left"></i> Sale Returns
         </a>
-        @endmodule
-        @module('customers')
+        @endif
+        @if($canCustomers)
         <a href="{{ route('customers.index') }}" class="nav-link {{ request()->routeIs('customers.*') ? 'active' : '' }}">
             <i class="bi bi-people-fill"></i> Customers
         </a>
-        @endmodule
+        @endif
 
-        @module('purchases')
+        {{-- ── Purchases Section ──────────────────────────────────── --}}
+        @if($user->can('view purchases') && \App\Helpers\Module::isActive('purchases'))
         <div class="nav-section">Purchases</div>
         <a href="{{ route('suppliers.index') }}" class="nav-link {{ request()->routeIs('suppliers.*') ? 'active' : '' }}">
             <i class="bi bi-building-fill"></i> Suppliers
@@ -380,15 +380,18 @@
         <a href="{{ route('grns.index') }}" class="nav-link {{ request()->routeIs('grns.*') ? 'active' : '' }}">
             <i class="bi bi-truck"></i> GRN
         </a>
-        @endmodule
+        @endif
 
-        @module('expenses')
+        {{-- ── Finance Section ────────────────────────────────────── --}}
+        @if($user->can('view expenses') && \App\Helpers\Module::isActive('expenses'))
         <div class="nav-section">Finance</div>
         <a href="{{ route('expenses.index') }}" class="nav-link {{ request()->routeIs('expenses.*') ? 'active' : '' }}">
             <i class="bi bi-cash-coin"></i> Expenses
         </a>
-        @endmodule
+        @endif
 
+        {{-- ── Reports Section ─────────────────────────────────────── --}}
+        @if($user->can('view reports'))
         @php
             $anyReport = \App\Helpers\Module::isActive('report_daily')
                       || \App\Helpers\Module::isActive('report_monthly')

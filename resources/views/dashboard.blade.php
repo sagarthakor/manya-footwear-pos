@@ -101,6 +101,7 @@
     </a>
 </div>
 
+@can('view sales')
 <div class="row g-3 mb-4">
     <div class="col-6 col-md-3">
         <div class="kpi-card" style="background:linear-gradient(135deg,#e74c3c,#c0392b)">
@@ -131,9 +132,11 @@
         </div>
     </div>
 </div>
+@endcan
 
 <div class="row g-3">
     <div class="col-md-8">
+        @can('view sales')
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center py-3">
                 <span class="fw-semibold"><i class="bi bi-receipt me-2 text-danger"></i>My Recent Sales</span>
@@ -163,6 +166,7 @@
                 </div>
             </div>
         </div>
+        @endcan
     </div>
     <div class="col-md-4">
         <div class="card border-0 shadow-sm">
@@ -215,6 +219,7 @@
 <div class="sec-hdr mb-3">Today's Performance</div>
 <div class="row g-3 mb-4">
 
+    @can('view sales')
     <div class="col-6 col-lg-2">
         <div class="kpi-card" style="background:linear-gradient(135deg,#e74c3c,#c0392b)">
             <i class="bi bi-graph-up kpi-icon"></i>
@@ -241,6 +246,7 @@
             <div class="kpi-sub">Digital payments</div>
         </div>
     </div>
+    @endcan
 
     @module('expenses')
     @can('view expenses')
@@ -287,6 +293,7 @@
 <div class="sec-hdr mb-3">{{ now()->format('F') }} Snapshot</div>
 <div class="row g-3 mb-4">
 
+    @can('view sales')
     <div class="col-6 col-md-3 col-lg">
         <div class="snap-card">
             <div class="snap-icon text-danger"><i class="bi bi-bag-check-fill"></i></div>
@@ -295,6 +302,7 @@
             <div class="text-muted mt-1" style="font-size:.7rem">{{ $monthOrders }} orders · Avg &#8377;{{ $monthOrders > 0 ? number_format($monthSales / $monthOrders, 0) : 0 }}</div>
         </div>
     </div>
+    @endcan
 
     @module('purchases')
     @can('view purchases')
@@ -352,6 +360,7 @@
 
     {{-- Recent Sales --}}
     <div class="col-lg-8">
+        @can('view sales')
         <div class="card border-0 shadow-sm h-100">
             <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center py-3">
                 <span class="fw-semibold"><i class="bi bi-clock-history me-2 text-danger"></i>Recent Sales</span>
@@ -396,11 +405,13 @@
                 </div>
             </div>
         </div>
+        @endcan
     </div>
 
     {{-- Right column --}}
     <div class="col-lg-4">
 
+        @can('view sales')
         {{-- Payment Breakdown --}}
         <div class="card border-0 shadow-sm mb-3">
             <div class="card-header bg-white border-bottom py-3">
@@ -450,6 +461,7 @@
                 </div>
             </div>
         </div>
+        @endcan
 
         {{-- Stock Alerts --}}
         <div class="card border-0 shadow-sm">

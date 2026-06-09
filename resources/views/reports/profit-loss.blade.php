@@ -62,6 +62,7 @@
             <div class="stat-value fs-5">&#8377;{{ number_format($report['gst'], 0) }}</div>
         </div>
     </div>
+    @can('view purchase price')
     <div class="col" style="flex:0 0 16.66%;max-width:16.66%">
         <div class="stat-card" style="background:linear-gradient(135deg,#e67e22,#d35400)">
             <div class="small mb-1" style="opacity:.85">COGS</div>
@@ -74,6 +75,7 @@
             <div class="stat-value fs-5">&#8377;{{ number_format($report['gross_profit'], 0) }}</div>
         </div>
     </div>
+    @endcan
     <div class="col" style="flex:0 0 16.66%;max-width:16.66%">
         <div class="stat-card" style="background:linear-gradient(135deg,#e74c3c,#c0392b)">
             <div class="small mb-1" style="opacity:.85">Expenses</div>
@@ -107,6 +109,7 @@
                             <td class="text-muted ps-4">GST Collected</td>
                             <td class="text-end text-warning">&#8377;{{ number_format($report['gst'], 2) }}</td>
                         </tr>
+                        @can('view purchase price')
                         <tr>
                             <td class="text-muted ps-4">Less: Cost of Goods Sold</td>
                             <td class="text-end text-danger">-&#8377;{{ number_format($report['cogs'], 2) }}</td>
@@ -115,6 +118,7 @@
                             <td class="fw-semibold">Gross Profit</td>
                             <td class="text-end fw-semibold text-success">&#8377;{{ number_format($report['gross_profit'], 2) }}</td>
                         </tr>
+                        @endcan
                         <tr>
                             <td class="text-muted ps-4">Less: Total Expenses</td>
                             <td class="text-end text-danger">-&#8377;{{ number_format($report['expenses'], 2) }}</td>

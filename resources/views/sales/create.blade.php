@@ -107,7 +107,7 @@
                         <i class="bi bi-upc-scan me-1 text-danger"></i>Barcode Scan / Search
                     </label>
                     <input type="text" id="scanInput" class="form-control form-control-lg"
-                        placeholder="Scan barcode or search product name..."
+                        placeholder="Scan barcode / Article No / Product Name..."
                         autocomplete="off" autofocus>
                 </div>
                 <div class="col-md-4">
@@ -259,10 +259,12 @@ function searchProduct(query, isEnter) {
                 return;
             }
 
-            // Exact barcode match + Enter or scanner (long code) → add to cart directly
-            var exactBarcode = products.find(function(p) { return p.barcode === query; });
-            if (exactBarcode && (isEnter || query.length >= 8)) {
-                addToCart(exactBarcode);
+            // Exact barcode or article no match + Enter or scanner → add to cart directly
+            var exactMatch = products.find(function(p) {
+                return p.barcode === query || p.sku === query || p.item_code === query;
+            });
+            if (exactMatch && (isEnter || query.length >= 8)) {
+                addToCart(exactMatch);
                 scanInput.value = '';
                 document.getElementById('searchInfo').innerHTML = '<span class="text-success"><i class="bi bi-check-circle"></i> Added!</span>';
                 setTimeout(function() { document.getElementById('searchInfo').textContent = 'Ready to scan...'; }, 1500);

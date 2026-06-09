@@ -49,6 +49,8 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
+        $canSeeCost = auth()->user()->can('view purchase price');
+
         $validated = $request->validate([
             'category_id'    => 'required|exists:categories,id',
             'name'           => 'required|string|max:200',
@@ -58,13 +60,17 @@ class ProductController extends Controller
             'brand_id'       => 'nullable|exists:brands,id',
             'size'           => 'nullable|string|max:20',
             'color'          => 'nullable|string|max:50',
-            'purchase_price' => 'required|numeric|min:0',
+            'purchase_price' => $canSeeCost ? 'required|numeric|min:0' : 'sometimes|nullable|numeric|min:0',
             'selling_price'  => 'required|numeric|min:0',
             'mrp'            => 'nullable|numeric|min:0',
             'tax_percent'    => 'nullable|numeric|in:0,5,12,18,28',
             'alert_quantity' => 'required|integer|min:0',
             'description'    => 'nullable|string',
         ]);
+
+        if (!$canSeeCost) {
+            $validated['purchase_price'] = 0;
+        }
 
         $manualBarcode = !empty($validated['barcode']);
 
@@ -102,6 +108,8 @@ class ProductController extends Controller
 
     public function update(Request $request, Product $product)
     {
+        $canSeeCost = auth()->user()->can('view purchase price');
+
         $validated = $request->validate([
             'category_id'    => 'required|exists:categories,id',
             'name'           => 'required|string|max:200',
@@ -111,7 +119,7 @@ class ProductController extends Controller
             'brand_id'       => 'nullable|exists:brands,id',
             'size'           => 'nullable|string|max:20',
             'color'          => 'nullable|string|max:50',
-            'purchase_price' => 'required|numeric|min:0',
+            'purchase_price' => $canSeeCost ? 'required|numeric|min:0' : 'sometimes|nullable|numeric|min:0',
             'selling_price'  => 'required|numeric|min:0',
             'mrp'            => 'nullable|numeric|min:0',
             'tax_percent'    => 'nullable|numeric|in:0,5,12,18,28',
@@ -120,6 +128,9 @@ class ProductController extends Controller
             'is_active'      => 'boolean',
         ]);
         $validated['is_active'] = $request->boolean('is_active');
+        if (!$canSeeCost) {
+            unset($validated['purchase_price']); // keep existing price untouched
+        }
         $validated['brand'] = $validated['brand_id']
             ? Brand::find($validated['brand_id'])?->name
             : null;
@@ -165,6 +176,8 @@ class ProductController extends Controller
         $products = Product::where('is_active', true)
             ->where(function ($query) use ($q) {
                 $query->where('barcode', $q)
+                      ->orWhere('sku', $q)
+                      ->orWhere('sku', 'like', '%' . $q . '%')
                       ->orWhere('item_code', $q)
                       ->orWhere('item_code', 'like', '%' . $q . '%')
                       ->orWhere('name', 'like', '%' . $q . '%');

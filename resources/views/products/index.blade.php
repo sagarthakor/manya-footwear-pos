@@ -58,7 +58,7 @@
                         <th>Barcode</th>
                         <th>Category</th>
                         <th>Size / Color</th>
-                        <th>Cost (₹)</th>
+                        @can('view purchase price')<th>Cost (₹)</th>@endcan
                         <th>MRP (₹)</th>
                         <th>Selling (₹)</th>
                         <th>GST %</th>
@@ -111,7 +111,9 @@
                             @endif
                         </td>
 
+                        @can('view purchase price')
                         <td class="small">&#8377;{{ number_format($product->purchase_price, 0) }}</td>
+                        @endcan
 
                         <td class="small">
                             @if($product->mrp)
@@ -172,7 +174,7 @@
                         </td>
                     </tr>
                     @empty
-                    <tr><td colspan="12" class="text-center text-muted py-5">No products found</td></tr>
+                    <tr><td colspan="{{ auth()->user()->can('view purchase price') ? 12 : 11 }}" class="text-center text-muted py-5">No products found</td></tr>
                     @endforelse
                 </tbody>
             </table>

@@ -54,7 +54,9 @@
                     @if($product->brand)<tr class="border-bottom"><td class="text-muted ps-3">Brand</td><td class="pe-3">{{ $product->brand }}</td></tr>@endif
                     <tr class="border-bottom"><td class="text-muted ps-3">Size</td><td class="pe-3">{{ $product->size ?? '—' }}</td></tr>
                     <tr class="border-bottom"><td class="text-muted ps-3">Color</td><td class="pe-3">{{ $product->color ?? '—' }}</td></tr>
+                    @can('view purchase price')
                     <tr class="border-bottom"><td class="text-muted ps-3">Cost</td><td class="pe-3">&#8377;{{ number_format($product->purchase_price, 0) }}</td></tr>
+                    @endcan
                     <tr class="border-bottom"><td class="text-muted ps-3">Selling Price</td><td class="fw-bold text-danger pe-3">&#8377;{{ number_format($product->selling_price, 0) }}</td></tr>
                     @if($product->mrp)<tr class="border-bottom"><td class="text-muted ps-3">MRP</td><td class="pe-3">&#8377;{{ number_format($product->mrp, 0) }}</td></tr>@endif
                     <tr>

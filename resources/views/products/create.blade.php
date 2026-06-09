@@ -30,15 +30,15 @@
                             @error('category_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label fw-semibold">SKU / Article No <span class="text-danger">*</span></label>
+                            <label class="form-label fw-semibold">Article Code (SKU) <span class="text-danger">*</span></label>
                             <input type="text" name="sku" class="form-control @error('sku') is-invalid @enderror"
                                 value="{{ old('sku') }}" required placeholder="e.g. NK-AM270-001">
                             @error('sku')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label fw-semibold">Item Code</label>
+                            <label class="form-label fw-semibold">Item Code <small class="text-muted fw-normal">(optional)</small></label>
                             <input type="text" name="item_code" class="form-control @error('item_code') is-invalid @enderror"
-                                value="{{ old('item_code') }}" placeholder="Manufacturer item/article code">
+                                value="{{ old('item_code') }}" placeholder="Secondary item/supplier code">
                             @error('item_code')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
                         <div class="col-md-4">
@@ -71,6 +71,7 @@
                             <input type="text" name="color" class="form-control"
                                 value="{{ old('color') }}" placeholder="e.g. Black">
                         </div>
+                        @can('view purchase price')
                         <div class="col-md-4">
                             <label class="form-label fw-semibold">Purchase Price (&#8377;) <span class="text-danger">*</span></label>
                             <div class="input-group">
@@ -78,7 +79,9 @@
                                 <input type="number" name="purchase_price" class="form-control @error('purchase_price') is-invalid @enderror"
                                     value="{{ old('purchase_price') }}" required min="0" step="0.01">
                             </div>
+                            @error('purchase_price')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
+                        @endcan
                         <div class="col-md-4">
                             <label class="form-label fw-semibold">Selling Price (&#8377;) <span class="text-danger">*</span></label>
                             <div class="input-group">

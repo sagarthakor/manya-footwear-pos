@@ -21,15 +21,13 @@ class CheckRole
 
         $user = auth()->user();
 
-        // Super admin ko kisi bhi role restriction se bypass milti hai
-        if ($user->isSuperAdmin()) {
-            return $next($request);
+        foreach ($roles as $role) {
+            if ($role === 'super_admin' && $user->isSuperAdmin()) return $next($request);
+            if ($role === 'admin'       && $user->isAdmin())      return $next($request);
+            if ($role === 'manager'     && $user->isManager())    return $next($request);
+            if ($role === $user->role)                            return $next($request);
         }
 
-        if (!in_array($user->role, $roles)) {
-            abort(403, 'Aapko yahan access nahi hai.');
-        }
-
-        return $next($request);
+        abort(403, 'Aapko yahan access nahi hai.');
     }
 }

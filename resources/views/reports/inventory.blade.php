@@ -79,12 +79,14 @@
             <div style="opacity:.85">Total Products</div>
         </div>
     </div>
+    @can('view purchase price')
     <div class="col-md-4">
         <div class="stat-card" style="background:linear-gradient(135deg,#27ae60,#229954)">
             <div class="stat-value">&#8377;{{ number_format($totalValue, 0) }}</div>
             <div style="opacity:.85">Stock Value (Cost)</div>
         </div>
     </div>
+    @endcan
     <div class="col-md-4">
         <div class="stat-card" style="background:linear-gradient(135deg,#e74c3c,#c0392b)">
             <div class="stat-value">{{ $lowStockProducts->count() }}</div>
@@ -114,11 +116,11 @@
                     <th>Item Code</th>
                     <th>Category</th>
                     <th>Size / Color</th>
-                    <th>Cost Price</th>
+                    @can('view purchase price')<th>Cost Price</th>@endcan
                     <th>Selling Price</th>
                     <th>GST %</th>
                     <th>Stock</th>
-                    <th>Stock Value</th>
+                    @can('view purchase price')<th>Stock Value</th>@endcan
                     <th>Retail Value</th>
                 </tr>
             </thead>
@@ -127,7 +129,7 @@
                 @foreach($products as $product)
                 @if($prevCat !== $product->category->name)
                 <tr class="table-secondary">
-                    <td colspan="11" class="fw-bold small text-uppercase">{{ $product->category->name }}</td>
+                    <td colspan="{{ auth()->user()->can('view purchase price') ? 11 : 9 }}" class="fw-bold small text-uppercase">{{ $product->category->name }}</td>
                 </tr>
                 @php $prevCat = $product->category->name; @endphp
                 @endif
@@ -140,7 +142,9 @@
                     <td class="small font-monospace text-muted">{{ $product->item_code ?? '—' }}</td>
                     <td class="small">{{ $product->category->name }}</td>
                     <td class="small">{{ $product->size ?? '-' }} / {{ $product->color ?? '-' }}</td>
+                    @can('view purchase price')
                     <td>&#8377;{{ number_format($product->purchase_price, 0) }}</td>
+                    @endcan
                     <td>&#8377;{{ number_format($product->selling_price, 0) }}</td>
                     <td>
                         @if($product->tax_percent > 0)
@@ -156,16 +160,20 @@
                             <span class="badge bg-success">{{ $product->stock_quantity }}</span>
                         @endif
                     </td>
+                    @can('view purchase price')
                     <td>&#8377;{{ number_format($product->stock_quantity * $product->purchase_price, 0) }}</td>
+                    @endcan
                     <td>&#8377;{{ number_format($product->stock_quantity * $product->selling_price, 0) }}</td>
                 </tr>
                 @endforeach
             </tbody>
             <tfoot class="table-light fw-bold">
                 <tr>
-                    <td colspan="8">Total ({{ $products->count() }} products)</td>
+                    <td colspan="{{ auth()->user()->can('view purchase price') ? 8 : 6 }}">Total ({{ $products->count() }} products)</td>
                     <td>{{ $products->sum('stock_quantity') }}</td>
+                    @can('view purchase price')
                     <td>&#8377;{{ number_format($totalValue, 0) }}</td>
+                    @endcan
                     <td>&#8377;{{ number_format($totalRetailValue, 0) }}</td>
                 </tr>
             </tfoot>

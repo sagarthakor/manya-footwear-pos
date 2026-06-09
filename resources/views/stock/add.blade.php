@@ -35,13 +35,14 @@
             <h5 class="mt-2 mb-1">Add Stock</h5>
             <p class="mb-3" style="opacity:.75;font-size:.9rem">
                 <span class="search-badge"><i class="bi bi-upc-scan me-1"></i>Barcode</span>
+                <span class="search-badge"><i class="bi bi-tag me-1"></i>Article No</span>
                 <span class="search-badge"><i class="bi bi-hash me-1"></i>Item Code</span>
                 <span class="search-badge"><i class="bi bi-search me-1"></i>Product Name</span>
             </p>
             <input type="text" id="stockSearchInput" class="form-control form-control-lg"
-                placeholder="Scan barcode / type item code or product name..."
+                placeholder="Scan barcode / Article No / Item Code / Product Name..."
                 autocomplete="off" autofocus>
-            <small class="mt-2 d-block" style="opacity:.7">Barcode scan karo ya naam / item code type karo</small>
+            <small class="mt-2 d-block" style="opacity:.7">Barcode scan karo ya Article No / naam type karo</small>
         </div>
 
         {{-- Search Results Dropdown --}}
@@ -75,11 +76,15 @@
                             class="form-control form-control-lg text-center fw-bold"
                             value="1" min="1" required>
                     </div>
+                    @can('view purchase price')
                     <div class="col-md-4">
                         <label class="form-label fw-semibold">Purchase Price (&#8377;)</label>
                         <input type="number" name="purchase_price" id="purchasePriceInput"
                             class="form-control" step="0.01" min="0" placeholder="Optional">
                     </div>
+                    @else
+                    <div class="col-md-4"></div>
+                    @endcan
                     <div class="col-md-4">
                         <label class="form-label fw-semibold">Notes</label>
                         <input type="text" name="notes" class="form-control" placeholder="e.g. New batch">
@@ -184,13 +189,14 @@ function showProduct(p) {
     productSection.style.display = 'block';
     document.getElementById('productFoundName').textContent = p.name;
     document.getElementById('productFoundMeta').textContent =
-        (p.item_code ? 'Item Code: ' + p.item_code + '  |  ' : '') +
-        'SKU: ' + (p.sku || '—') +
+        'Article No: ' + (p.sku || '—') +
+        (p.item_code ? '  |  Item Code: ' + p.item_code : '') +
         (p.size  ? '  |  Size: ' + p.size  : '') +
         (p.color ? '  |  ' + p.color : '');
     document.getElementById('currentStockBadge').textContent = 'Current Stock: ' + p.stock_quantity;
     document.getElementById('hiddenBarcodeInput').value = p.barcode;
-    document.getElementById('purchasePriceInput').value = p.purchase_price || '';
+    var ppInput = document.getElementById('purchasePriceInput');
+    if (ppInput) ppInput.value = p.purchase_price || '';
     document.getElementById('productBarcodeImg').src = '/barcode/image/' + p.barcode;
     searchInput.disabled = true;
     document.getElementById('qtyInput').focus();
@@ -207,8 +213,8 @@ function showResultsList(products) {
         div.innerHTML =
             '<div class="fw-semibold">' + escHtml(p.name) + '</div>' +
             '<small class="text-muted">' +
-                (p.item_code ? '<span class="me-2">Item: <strong>' + escHtml(p.item_code) + '</strong></span>' : '') +
-                '<span class="me-2">SKU: ' + escHtml(p.sku || '—') + '</span>' +
+                '<span class="me-2">Article: <strong>' + escHtml(p.sku || '—') + '</strong></span>' +
+                (p.item_code ? '<span class="me-2">Item: ' + escHtml(p.item_code) + '</span>' : '') +
                 (p.size  ? '<span class="me-2">Size: ' + escHtml(p.size) + '</span>' : '') +
                 (p.color ? '<span class="me-2">' + escHtml(p.color) + '</span>' : '') +
                 '<span class="text-success fw-semibold">Stock: ' + p.stock_quantity + '</span>' +

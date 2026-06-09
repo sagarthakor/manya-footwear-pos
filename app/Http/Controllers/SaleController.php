@@ -16,7 +16,7 @@ class SaleController extends Controller
 {
     public function index(Request $request)
     {
-        abort_unless(Module::isActive('sales_history'), 403);
+        abort_unless(Module::isActive('sales_history') && auth()->user()->can('view sales'), 403);
         $query = Sale::with(['customer', 'user']);
         if ($request->date) {
             $query->whereDate('created_at', $request->date);
