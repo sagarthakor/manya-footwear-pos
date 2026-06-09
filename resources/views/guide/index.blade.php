@@ -94,7 +94,7 @@ en: {
     { id:"pos", icon:"bi-cart3", bg:"linear-gradient(135deg,#3498db,#2471a3)", nav:"New Sale",
       title:"New Sale (POS)", desc:"Create a bill and process customer payment",
       steps:[
-        "Click <strong>New Sale / POS</strong> in the sidebar or the "New Sale" button on the dashboard.",
+        "Click <strong>New Sale / POS</strong> in the sidebar or the \'New Sale\' button on the dashboard.",
         "In the <strong>search bar</strong>, scan a barcode with a scanner OR type the Article Code / Product Name and press <kbd>Enter</kbd>.",
         "If an <strong>exact match</strong> is found (barcode or article code), the item is added to cart instantly.",
         "For partial matches, a dropdown appears — click the correct product to add it.",
