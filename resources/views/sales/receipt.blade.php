@@ -139,7 +139,12 @@
                 @endif
             </td>
             <td class="col-qty">{{ $item->quantity }}</td>
-            <td class="col-rate">{{ number_format($item->unit_price, 2) }}</td>
+            <td class="col-rate">
+                {{ number_format($item->unit_price, 2) }}
+                @if($item->product_mrp && $item->product_mrp > $item->unit_price)
+                <div style="font-size:8.5px;color:#666"><s>&#8377;{{ number_format($item->product_mrp, 0) }}</s> {{ round((1 - $item->unit_price / $item->product_mrp) * 100) }}% OFF</div>
+                @endif
+            </td>
             <td class="col-amount">{{ number_format($item->total_price, 2) }}</td>
         </tr>
         @endforeach

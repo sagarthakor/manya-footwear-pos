@@ -302,7 +302,12 @@ function makeProductCard(product) {
         (detail ? '<div class="text-muted small">' + detail + '</div>' : '') +
         '<div class="text-muted small font-monospace">' + (product.item_code ? 'Item: ' + product.item_code + '  ' : '') + product.barcode + '</div>' +
         '<div class="d-flex justify-content-between align-items-center mt-2">' +
+        '<div>' +
         '<span class="price">&#8377;' + parseFloat(product.selling_price).toFixed(0) + '</span>' +
+        (product.mrp && parseFloat(product.mrp) > parseFloat(product.selling_price)
+            ? ' <small><s class="text-muted">&#8377;' + parseFloat(product.mrp).toFixed(0) + '</s> <span class="text-success fw-semibold">' + Math.round((1 - parseFloat(product.selling_price)/parseFloat(product.mrp))*100) + '% OFF</span></small>'
+            : '') +
+        '</div>' +
         '<span class="badge bg-' + stockColor + '">Stock: ' + product.stock_quantity + '</span>' +
         '</div>' +
         '</div></div>';
@@ -349,6 +354,7 @@ function addToCart(product) {
             barcode:     product.barcode,
             size:        product.size,
             color:       product.color,
+            mrp:         parseFloat(product.mrp || 0),
             quantity:    1,
             unit_price:  parseFloat(product.selling_price),
             tax_percent: parseFloat(product.tax_percent || 0),
@@ -393,11 +399,14 @@ function renderCart() {
         if (item.color) meta += item.color;
 
         var gstLabel = item.tax_percent > 0 ? ' | GST ' + item.tax_percent + '%' : '';
+        var mrpLabel = (item.mrp && item.mrp > item.unit_price)
+            ? ' <s class="text-muted">&#8377;' + item.mrp.toFixed(0) + '</s> <span class="text-success" style="font-size:.7rem">' + Math.round((1 - item.unit_price/item.mrp)*100) + '% OFF</span>'
+            : '';
         html +=
             '<div class="cart-item">' +
             '<div class="d-flex justify-content-between align-items-start">' +
             '<div style="flex:1"><div class="item-name">' + item.name + '</div>' +
-            (meta ? '<div class="item-meta">' + meta + ' | &#8377;' + item.unit_price.toFixed(2) + gstLabel + '</div>' : '<div class="item-meta">&#8377;' + item.unit_price.toFixed(2) + gstLabel + '</div>') +
+            (meta ? '<div class="item-meta">' + meta + ' | &#8377;' + item.unit_price.toFixed(2) + mrpLabel + gstLabel + '</div>' : '<div class="item-meta">&#8377;' + item.unit_price.toFixed(2) + mrpLabel + gstLabel + '</div>') +
             '</div>' +
             '<button class="btn btn-sm btn-link text-danger p-0 ms-2" onclick="removeFromCart(' + idx + ')"><i class="bi bi-x-lg"></i></button>' +
             '</div>' +

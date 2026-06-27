@@ -122,6 +122,7 @@ class SaleController extends Controller
                     'product_color'   => $product->color,
                     'quantity'        => $itemData['quantity'],
                     'unit_price'      => $itemData['unit_price'],
+                    'product_mrp'     => $product->mrp,
                     'discount'        => $itemData['discount'],
                     'tax_percent'     => $itemData['tax_percent'],
                     'tax_amount'      => $itemData['tax_amount'],
