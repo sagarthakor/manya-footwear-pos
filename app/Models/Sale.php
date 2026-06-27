@@ -10,7 +10,6 @@ class Sale extends Model
         'invoice_number', 'customer_id', 'user_id',
         'subtotal', 'discount_amount', 'tax_amount', 'total_amount',
         'paid_amount', 'change_amount', 'payment_method', 'status', 'notes',
-        'loyalty_points_earned', 'loyalty_points_redeemed',
     ];
 
     protected $casts = [

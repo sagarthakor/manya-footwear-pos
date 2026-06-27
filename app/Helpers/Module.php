@@ -35,7 +35,7 @@ class Module
             // ── Sales ────────────────────────────────────────────
             'sales_history'         => ['group' => 'Sales', 'label' => 'Sales History',        'icon' => 'bi-receipt',              'desc' => 'View and search past sales invoices'],
             'sale_returns'          => ['group' => 'Sales', 'label' => 'Sale Returns',         'icon' => 'bi-arrow-return-left',    'desc' => 'Customer returns and refund management'],
-            'customers'             => ['group' => 'Sales', 'label' => 'Customers',            'icon' => 'bi-people-fill',          'desc' => 'Customer management and loyalty points'],
+            'customers'             => ['group' => 'Sales', 'label' => 'Customers',            'icon' => 'bi-people-fill',          'desc' => 'Customer management'],
 
             // ── Finance ──────────────────────────────────────────
             'purchases'             => ['group' => 'Finance', 'label' => 'Purchases',          'icon' => 'bi-truck',                'desc' => 'Suppliers, Purchase Orders, GRN (Goods Received)'],

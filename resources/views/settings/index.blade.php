@@ -15,8 +15,6 @@
       <i class="bi bi-receipt me-2"></i>Receipt</a>
     <a class="list-group-item list-group-item-action" id="t4" data-bs-toggle="list" href="#barcode">
       <i class="bi bi-upc me-2"></i>Barcode Label</a>
-    <a class="list-group-item list-group-item-action" id="t5" data-bs-toggle="list" href="#loyalty">
-      <i class="bi bi-gift me-2"></i>Loyalty Points</a>
   </div>
 </div>
 <div class="col-md-9">
@@ -60,15 +58,6 @@
             <div class="col-md-4"><label class="form-label fw-semibold">Label Height (mm)</label><input type="number" name="barcode_label_height" class="form-control" value="{{ old('barcode_label_height', $settingValues->get('barcode_label_height','30')) }}" min="20" max="60"></div>
           </div>
           <small class="text-muted mt-2 d-block">Current: {{ $settingValues->get('barcode_label_width','60') }}mm × {{ $settingValues->get('barcode_label_height','30') }}mm</small>
-        </div>
-      </div>
-    </div>
-    <div class="tab-pane fade" id="loyalty">
-      <div class="card">
-        <div class="card-header py-3">Loyalty Points Settings</div>
-        <div class="card-body">
-          <div class="mb-3"><label class="form-label fw-semibold">Points Earned per ₹1 Spent</label><input type="number" name="loyalty_points_per_rupee" class="form-control" value="{{ old('loyalty_points_per_rupee', $settingValues->get('loyalty_points_per_rupee','1')) }}" min="0" step="0.1" style="max-width:150px"><small class="text-muted">e.g. 1 = earn 1 point per ₹1 spent</small></div>
-          <div class="mb-3"><label class="form-label fw-semibold">Points needed for ₹1 Discount</label><input type="number" name="points_to_rupee" class="form-control" value="{{ old('points_to_rupee', $settingValues->get('points_to_rupee','100')) }}" min="1" style="max-width:150px"><small class="text-muted">e.g. 100 = 100 points = ₹1 discount</small></div>
         </div>
       </div>
     </div>

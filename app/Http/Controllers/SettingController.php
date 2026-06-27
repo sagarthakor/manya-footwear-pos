@@ -63,8 +63,6 @@ class SettingController extends Controller
             'business_gst'             => '24XXXXX1234X1Z5',
             'currency_symbol'          => '₹',
             'tax_percent'              => '0',
-            'loyalty_points_per_rupee' => '1',   // 1 point per ₹1 spent
-            'points_to_rupee'          => '100', // 100 points = ₹1 discount
             'receipt_footer'           => 'Thank You! Come Again!',
             'receipt_exchange_policy'  => 'Exchange within 7 days (with bill only)',
             'low_stock_alert_qty'      => '5',
