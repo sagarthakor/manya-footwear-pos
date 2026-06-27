@@ -72,25 +72,14 @@ class ProductController extends Controller
             $validated['purchase_price'] = 0;
         }
 
-        $manualBarcode = !empty($validated['barcode']);
-
-        if (!$manualBarcode) {
-            $validated['barcode'] = $this->generateBarcode();
-        }
-
         $validated['brand'] = $validated['brand_id']
             ? Brand::find($validated['brand_id'])?->name
             : null;
 
-        $product = Product::create($validated);
+        Product::create($validated);
 
-        if ($manualBarcode) {
-            return redirect()->route('products.index')
-                ->with('success', 'Product added successfully.');
-        }
-
-        return redirect()->route('products.barcode', $product)
-            ->with('success', 'Product added! Print the barcode label and stick it on the product.');
+        return redirect()->route('products.index')
+            ->with('success', 'Product added successfully.');
     }
 
     public function show(Product $product)
@@ -188,11 +177,4 @@ class ProductController extends Controller
         return response()->json($products);
     }
 
-    private function generateBarcode(): string
-    {
-        do {
-            $barcode = '8' . str_pad(random_int(0, 9999999999999), 12, '0', STR_PAD_LEFT);
-        } while (Product::where('barcode', $barcode)->exists());
-        return $barcode;
-    }
 }

@@ -95,11 +95,15 @@
 
                         {{-- Barcode --}}
                         <td>
-                            <img src="{{ route('barcode.image', $product->barcode) }}"
-                                alt="{{ $product->barcode }}" style="height:28px;display:block">
-                            <small class="font-monospace text-muted" style="font-size:.65rem">
-                                {{ $product->barcode }}
-                            </small>
+                            @if($product->barcode)
+                                <img src="{{ route('barcode.image', $product->barcode) }}"
+                                    alt="{{ $product->barcode }}" style="height:28px;display:block">
+                                <small class="font-monospace text-muted" style="font-size:.65rem">
+                                    {{ $product->barcode }}
+                                </small>
+                            @else
+                                <span class="text-muted small">—</span>
+                            @endif
                         </td>
 
                         <td><span class="badge bg-secondary">{{ $product->category->name }}</span></td>

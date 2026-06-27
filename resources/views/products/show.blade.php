@@ -13,6 +13,7 @@
                 <i class="bi bi-upc me-2"></i><strong>Product Barcode</strong>
             </div>
             <div class="card-body text-center">
+                @if($product->barcode)
                 {{-- Large barcode image --}}
                 <img src="{{ route('barcode.image', $product->barcode) }}"
                     alt="{{ $product->barcode }}"
@@ -35,6 +36,11 @@
                     <div style="font-size:6.5px;font-family:monospace">{{ $product->barcode }}</div>
                 </div>
                 <div class="text-muted" style="font-size:.7rem;margin-top:4px">↑ Label preview (print & stick on product)</div>
+                @else
+                <div class="text-muted py-3">
+                    <i class="bi bi-upc fs-2 d-block mb-2"></i>No barcode assigned
+                </div>
+                @endif
             </div>
             <div class="card-footer p-2">
                 <a href="{{ route('products.barcode', $product) }}" class="btn btn-danger w-100">

@@ -45,9 +45,8 @@
                             <label class="form-label fw-semibold">Barcode</label>
                             <input type="text" name="barcode" id="barcodeInput"
                                 class="form-control @error('barcode') is-invalid @enderror"
-                                value="{{ old('barcode') }}" placeholder="Leave blank to auto-generate">
+                                value="{{ old('barcode') }}" placeholder="Enter barcode (optional)">
                             @error('barcode')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                            <div class="form-text">If blank, a unique barcode will be generated automatically.</div>
                         </div>
                         <div class="col-md-4">
                             <label class="form-label fw-semibold">Brand</label>
@@ -122,7 +121,7 @@
                     </div>
                     <div class="mt-4 d-flex gap-2">
                         <button type="submit" class="btn btn-danger">
-                            <i class="bi bi-save me-1"></i>Save & Generate Barcode
+                            <i class="bi bi-save me-1"></i>Save Product
                         </button>
                         <a href="{{ route('products.index') }}" class="btn btn-outline-secondary">Cancel</a>
                     </div>
