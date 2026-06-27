@@ -43,7 +43,13 @@ class Sale extends Model
 
     public static function generateInvoiceNumber(): string
     {
-        $prefix = 'INV-' . date('Ymd') . '-';
+        // India financial year: April 1 – March 31
+        $month = (int) date('n');
+        $year  = (int) date('Y');
+        $fyStart = $month >= 4 ? $year : $year - 1;
+        $fyEnd   = $fyStart + 1;
+        $prefix  = 'INV-' . substr($fyStart, 2) . substr($fyEnd, 2) . '-';
+
         $last = self::where('invoice_number', 'like', $prefix . '%')
             ->orderBy('id', 'desc')
             ->first();
