@@ -28,9 +28,9 @@
                             </select>
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label fw-semibold">Article Code (SKU) <span class="text-danger">*</span></label>
+                            <label class="form-label fw-semibold">Article Code (SKU) <small class="text-muted fw-normal">(optional, auto-generated if left blank)</small></label>
                             <input type="text" name="sku" class="form-control @error('sku') is-invalid @enderror"
-                                value="{{ old('sku', $product->sku) }}" required>
+                                value="{{ old('sku', $product->sku) }}">
                             @error('sku')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
                         <div class="col-md-4">
@@ -71,7 +71,8 @@
                         </div>
                         <div class="col-md-2">
                             <label class="form-label fw-semibold">Size</label>
-                            <input type="text" name="size" class="form-control" value="{{ old('size', $product->size) }}">
+                            <input type="text" name="size" class="form-control @error('size') is-invalid @enderror" value="{{ old('size', $product->size) }}">
+                            @error('size')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
                         <div class="col-md-2">
                             <label class="form-label fw-semibold">Color</label>
@@ -100,8 +101,9 @@
                             <label class="form-label fw-semibold">MRP (&#8377;)</label>
                             <div class="input-group">
                                 <span class="input-group-text">&#8377;</span>
-                                <input type="number" name="mrp" class="form-control"
+                                <input type="number" name="mrp" class="form-control @error('mrp') is-invalid @enderror"
                                     value="{{ old('mrp', $product->mrp) }}" min="0" step="0.01">
+                                @error('mrp')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -115,11 +117,7 @@
                             </select>
                             @error('tax_percent')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
-                        <div class="col-md-4">
-                            <label class="form-label fw-semibold">Low Stock Alert Qty</label>
-                            <input type="number" name="alert_quantity" class="form-control"
-                                value="{{ old('alert_quantity', $product->alert_quantity) }}" min="0">
-                        </div>
+                        <input type="hidden" name="alert_quantity" value="0">
                         <div class="col-md-4">
                             <label class="form-label fw-semibold">Status</label>
                             <div class="form-check form-switch mt-2">

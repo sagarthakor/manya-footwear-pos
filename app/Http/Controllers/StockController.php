@@ -38,15 +38,15 @@ class StockController extends Controller
     {
         abort_unless(Module::isActive('add_stock'), 403);
         $validated = $request->validate([
-            'barcode'        => 'required|string',
+            'product_id'     => 'required|integer|exists:products,id',
             'quantity'       => 'required|integer|min:1',
             'purchase_price' => 'nullable|numeric|min:0',
             'notes'          => 'nullable|string|max:500',
         ]);
 
-        $product = Product::where('barcode', $validated['barcode'])->where('is_active', true)->first();
+        $product = Product::where('id', $validated['product_id'])->where('is_active', true)->first();
         if (!$product) {
-            return back()->with('error', 'Product not found with barcode: ' . $validated['barcode']);
+            return back()->with('error', 'Product not found.');
         }
 
         $canSeeCost = auth()->user()->can('view purchase price');

@@ -7,7 +7,9 @@ use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
 class ProductController extends Controller
 {
@@ -40,11 +42,12 @@ class ProductController extends Controller
         return view('products.index', compact('products', 'categories'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
         $categories = Category::where('is_active', true)->get();
         $brands     = Brand::where('is_active', true)->orderBy('name')->get();
-        return view('products.create', compact('categories', 'brands'));
+        $variantOf  = $request->variant_of ? Product::find($request->variant_of) : null;
+        return view('products.create', compact('categories', 'brands', 'variantOf'));
     }
 
     public function store(Request $request)
@@ -52,34 +55,145 @@ class ProductController extends Controller
         $canSeeCost = auth()->user()->can('view purchase price');
 
         $validated = $request->validate([
-            'category_id'    => 'required|exists:categories,id',
-            'name'           => 'required|string|max:200',
-            'sku'            => 'required|string|max:50|unique:products',
-            'item_code'      => 'nullable|string|max:100|unique:products',
-            'barcode'        => 'nullable|string|max:50|unique:products',
-            'brand_id'       => 'nullable|exists:brands,id',
-            'size'           => 'nullable|string|max:20',
-            'color'          => 'nullable|string|max:50',
-            'purchase_price' => $canSeeCost ? 'required|numeric|min:0' : 'sometimes|nullable|numeric|min:0',
-            'selling_price'  => 'required|numeric|min:0',
-            'mrp'            => 'nullable|numeric|min:0',
-            'tax_percent'    => 'nullable|numeric|in:0,5,12,18,28',
-            'alert_quantity' => 'required|integer|min:0',
-            'description'    => 'nullable|string',
+            'category_id'           => 'required|exists:categories,id',
+            'name'                  => 'required|string|max:200',
+            'brand_id'              => 'nullable|exists:brands,id',
+            'purchase_price'        => $canSeeCost ? 'required|numeric|min:0' : 'sometimes|nullable|numeric|min:0',
+            'selling_price'         => 'required|numeric|min:0',
+            'mrp'                   => 'nullable|numeric|min:0|gte:selling_price',
+            'tax_percent'           => 'nullable|numeric|in:0,5,12,18,28',
+            'alert_quantity'        => 'required|integer|min:0',
+            'description'           => 'nullable|string',
+            'variants'              => 'required|array|min:1',
+            'variants.*.size'       => 'nullable|string|max:20',
+            'variants.*.color'      => 'nullable|string|max:50',
+            'variants.*.sku'        => 'nullable|string|max:50',
+            'variants.*.item_code'  => 'nullable|string|max:100',
+            'variants.*.barcode'    => 'nullable|string|max:50',
+        ], [
+            'mrp.gte' => 'MRP cannot be less than the Selling Price.',
         ]);
+
+        $this->validateVariantUniqueness($validated['variants']);
+        $this->validateDuplicateNameSizeColor($validated['name'], $validated['variants']);
 
         if (!$canSeeCost) {
             $validated['purchase_price'] = 0;
         }
 
-        $validated['brand'] = $validated['brand_id']
+        $brandName = ($validated['brand_id'] ?? null)
             ? Brand::find($validated['brand_id'])?->name
             : null;
 
-        Product::create($validated);
+        DB::transaction(function () use ($validated, $brandName) {
+            foreach ($validated['variants'] as $variant) {
+                $skuProvided = trim((string) ($variant['sku'] ?? '')) !== '';
+
+                $product = Product::create([
+                    'category_id'    => $validated['category_id'],
+                    'brand_id'       => $validated['brand_id'] ?? null,
+                    'name'           => $validated['name'],
+                    'sku'            => $skuProvided ? $variant['sku'] : null,
+                    'item_code'      => $variant['item_code'] ?: null,
+                    'barcode'        => $variant['barcode'] ?: null,
+                    'brand'          => $brandName,
+                    'size'           => $variant['size'] ?: null,
+                    'color'          => $variant['color'] ?: null,
+                    'purchase_price' => $validated['purchase_price'] ?? 0,
+                    'selling_price'  => $validated['selling_price'],
+                    'mrp'            => $validated['mrp'] ?? null,
+                    'tax_percent'    => $validated['tax_percent'] ?? 0,
+                    'alert_quantity' => $validated['alert_quantity'],
+                    'description'    => $validated['description'] ?? null,
+                ]);
+
+                if (!$skuProvided) {
+                    $product->update(['sku' => $this->generateSku($product->id)]);
+                }
+            }
+        });
+
+        $count = count($validated['variants']);
 
         return redirect()->route('products.index')
-            ->with('success', 'Product added successfully.');
+            ->with('success', $count > 1 ? "{$count} product variants added successfully." : 'Product added successfully.');
+    }
+
+    private function validateVariantUniqueness(array $variants, ?int $excludeProductId = null): void
+    {
+        $errors = [];
+        $seen   = ['sku' => [], 'item_code' => [], 'barcode' => []];
+
+        foreach ($variants as $i => $variant) {
+            foreach (['sku', 'item_code', 'barcode'] as $field) {
+                $value = trim((string) ($variant[$field] ?? ''));
+                if ($value === '') {
+                    continue;
+                }
+                if (isset($seen[$field][$value])) {
+                    $errors["variants.{$i}.{$field}"] = ucfirst(str_replace('_', ' ', $field)) . " '{$value}' is duplicated in this form.";
+                    continue;
+                }
+                $seen[$field][$value] = true;
+
+                $query = Product::where($field, $value);
+                if ($excludeProductId) {
+                    $query->where('id', '!=', $excludeProductId);
+                }
+                if ($query->exists()) {
+                    $errors["variants.{$i}.{$field}"] = ucfirst(str_replace('_', ' ', $field)) . " '{$value}' already exists.";
+                }
+            }
+        }
+
+        if ($errors) {
+            throw ValidationException::withMessages($errors);
+        }
+    }
+
+    private function validateDuplicateNameSizeColor(string $name, array $variants, ?int $excludeProductId = null, bool $flatKey = false): void
+    {
+        $errors = [];
+        $seen   = [];
+        $normalizedName = strtolower(trim($name));
+
+        foreach ($variants as $i => $variant) {
+            $sizeKey  = strtolower(trim((string) ($variant['size'] ?? '')));
+            $colorKey = strtolower(trim((string) ($variant['color'] ?? '')));
+            $comboKey = $sizeKey . '|' . $colorKey;
+            $errorKey = $flatKey ? 'size' : "variants.{$i}.size";
+
+            if (isset($seen[$comboKey])) {
+                $errors[$errorKey] = 'This Size/Color combination is duplicated in this form.';
+                continue;
+            }
+            $seen[$comboKey] = true;
+
+            $query = Product::whereRaw('LOWER(TRIM(name)) = ?', [$normalizedName])
+                ->whereRaw('LOWER(TRIM(COALESCE(size, ""))) = ?', [$sizeKey])
+                ->whereRaw('LOWER(TRIM(COALESCE(color, ""))) = ?', [$colorKey]);
+            if ($excludeProductId) {
+                $query->where('id', '!=', $excludeProductId);
+            }
+            if ($query->exists()) {
+                $errors[$errorKey] = "A product named '{$name}' with this Size/Color already exists.";
+            }
+        }
+
+        if ($errors) {
+            throw ValidationException::withMessages($errors);
+        }
+    }
+
+    private function generateSku(int $productId): string
+    {
+        $base = 'SKU' . str_pad($productId, 6, '0', STR_PAD_LEFT);
+        $sku  = $base;
+        $i    = 1;
+        while (Product::where('sku', $sku)->where('id', '!=', $productId)->exists()) {
+            $sku = $base . '-' . $i++;
+        }
+        return $sku;
     }
 
     public function show(Product $product)
@@ -102,7 +216,7 @@ class ProductController extends Controller
         $validated = $request->validate([
             'category_id'    => 'required|exists:categories,id',
             'name'           => 'required|string|max:200',
-            'sku'            => 'required|string|max:50|unique:products,sku,' . $product->id,
+            'sku'            => 'nullable|string|max:50|unique:products,sku,' . $product->id,
             'item_code'      => 'nullable|string|max:100|unique:products,item_code,' . $product->id,
             'barcode'        => 'nullable|string|max:50|unique:products,barcode,' . $product->id,
             'brand_id'       => 'nullable|exists:brands,id',
@@ -110,13 +224,25 @@ class ProductController extends Controller
             'color'          => 'nullable|string|max:50',
             'purchase_price' => $canSeeCost ? 'required|numeric|min:0' : 'sometimes|nullable|numeric|min:0',
             'selling_price'  => 'required|numeric|min:0',
-            'mrp'            => 'nullable|numeric|min:0',
+            'mrp'            => 'nullable|numeric|min:0|gte:selling_price',
             'tax_percent'    => 'nullable|numeric|in:0,5,12,18,28',
             'alert_quantity' => 'required|integer|min:0',
             'description'    => 'nullable|string',
             'is_active'      => 'boolean',
+        ], [
+            'mrp.gte' => 'MRP cannot be less than the Selling Price.',
         ]);
+
+        $this->validateDuplicateNameSizeColor(
+            $validated['name'],
+            [['size' => $validated['size'] ?? '', 'color' => $validated['color'] ?? '']],
+            $product->id,
+            flatKey: true
+        );
+
         $validated['is_active'] = $request->boolean('is_active');
+        $skuProvided = trim((string) ($validated['sku'] ?? '')) !== '';
+        $validated['sku'] = $skuProvided ? $validated['sku'] : $this->generateSku($product->id);
         if (!$canSeeCost) {
             unset($validated['purchase_price']); // keep existing price untouched
         }

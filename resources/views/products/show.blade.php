@@ -83,6 +83,9 @@
             <a href="{{ route('products.edit', $product) }}" class="btn btn-outline-warning">
                 <i class="bi bi-pencil me-2"></i>Edit Product
             </a>
+            <a href="{{ route('products.create', ['variant_of' => $product->id]) }}" class="btn btn-outline-primary">
+                <i class="bi bi-copy me-2"></i>Add Variant (Size/Color)
+            </a>
             <a href="{{ route('stock.add') }}" class="btn btn-outline-success">
                 <i class="bi bi-plus-square me-2"></i>Add Stock via Barcode
             </a>

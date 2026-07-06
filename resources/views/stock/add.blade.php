@@ -58,7 +58,7 @@
         {{-- Product Found / Add Stock Form --}}
         <div id="productFoundSection" class="product-found-card mb-3" style="display:none">
             <div class="d-flex align-items-center gap-3 mb-3">
-                <img id="productBarcodeImg" src="" alt="barcode" style="height:52px">
+                <img id="productBarcodeImg" src="" alt="barcode" style="height:52px;display:none">
                 <div>
                     <h6 class="mb-0 fw-bold" id="productFoundName">-</h6>
                     <small class="text-muted" id="productFoundMeta">-</small><br>
@@ -68,7 +68,7 @@
 
             <form action="{{ route('stock.process') }}" method="POST">
                 @csrf
-                <input type="hidden" name="barcode" id="hiddenBarcodeInput">
+                <input type="hidden" name="product_id" id="hiddenProductIdInput">
                 <div class="row g-3">
                     <div class="col-md-4">
                         <label class="form-label fw-semibold">Quantity to Add <span class="text-danger">*</span></label>
@@ -110,6 +110,12 @@
         @if(session('error'))
         <div class="alert alert-danger alert-dismissible fade show">
             <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        @endif
+        @if($errors->any())
+        <div class="alert alert-danger alert-dismissible fade show">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ $errors->first() }}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
         @endif
@@ -194,10 +200,16 @@ function showProduct(p) {
         (p.size  ? '  |  Size: ' + p.size  : '') +
         (p.color ? '  |  ' + p.color : '');
     document.getElementById('currentStockBadge').textContent = 'Current Stock: ' + p.stock_quantity;
-    document.getElementById('hiddenBarcodeInput').value = p.barcode;
+    document.getElementById('hiddenProductIdInput').value = p.id;
     var ppInput = document.getElementById('purchasePriceInput');
     if (ppInput) ppInput.value = p.purchase_price || '';
-    document.getElementById('productBarcodeImg').src = '/barcode/image/' + p.barcode;
+    var barcodeImg = document.getElementById('productBarcodeImg');
+    if (p.barcode) {
+        barcodeImg.src = '/barcode/image/' + p.barcode;
+        barcodeImg.style.display = '';
+    } else {
+        barcodeImg.style.display = 'none';
+    }
     searchInput.disabled = true;
     document.getElementById('qtyInput').focus();
     document.getElementById('qtyInput').select();
