@@ -77,8 +77,12 @@
                     <tr>
                         <td class="text-muted">Barcode</td>
                         <td>
-                            <span class="font-monospace fw-bold">{{ $product->barcode }}</span>
-                            <span class="badge bg-success ms-2">Auto-Generated</span>
+                            @if($product->barcode)
+                                <span class="font-monospace fw-bold">{{ $product->barcode }}</span>
+                                <span class="badge bg-success ms-2">Auto-Generated</span>
+                            @else
+                                <span class="badge bg-warning text-dark">Not Assigned</span>
+                            @endif
                         </td>
                     </tr>
                 </table>
@@ -97,7 +101,7 @@
                     <button onclick="changeQty(1)">+</button>
                 </div>
                 <div class="d-grid gap-2">
-                    <button onclick="printLabels()" class="btn btn-danger btn-lg">
+                    <button onclick="printLabels()" class="btn btn-danger btn-lg" @if(!$product->barcode) disabled @endif>
                         <i class="bi bi-printer-fill me-2"></i>Print Barcode Labels
                     </button>
                     <a href="{{ route('products.show', $product) }}" class="btn btn-outline-secondary">
@@ -124,6 +128,7 @@
                     This is what the label looks like. Print and stick on the product.
                 </p>
 
+                @if($product->barcode)
                 {{-- Single preview --}}
                 <div class="label-card">
                     <div class="shop">Mayank Footware</div>
@@ -146,6 +151,13 @@
                     <i class="bi bi-lightbulb me-1 text-warning"></i>
                     <strong>Instructions:</strong> Click "Print Barcode Labels", set copies, then cut and stick each label on the product.
                 </div>
+                @else
+                <div class="alert alert-warning mb-0">
+                    <i class="bi bi-exclamation-triangle me-1"></i>
+                    This product doesn't have a barcode yet, so no label can be printed.
+                    <a href="{{ route('barcodes.assign') }}" class="alert-link">Assign a barcode</a> to this product first.
+                </div>
+                @endif
             </div>
         </div>
 
@@ -211,6 +223,7 @@ function changeQty(delta) {
 }
 
 function printLabels() {
+    if (!product.barcode) return;
     var qty      = parseInt(document.getElementById('labelQty').value) || 1;
     var printArea = document.getElementById('printArea');
     printArea.style.display = 'block';

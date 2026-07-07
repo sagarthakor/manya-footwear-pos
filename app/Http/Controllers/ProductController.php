@@ -6,6 +6,7 @@ use App\Helpers\Module;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\StockMovement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -70,6 +71,7 @@ class ProductController extends Controller
             'variants.*.sku'        => 'nullable|string|max:50',
             'variants.*.item_code'  => 'nullable|string|max:100',
             'variants.*.barcode'    => 'nullable|string|max:50',
+            'variants.*.stock_quantity' => 'nullable|integer|min:0',
         ], [
             'mrp.gte' => 'MRP cannot be less than the Selling Price.',
         ]);
@@ -85,9 +87,10 @@ class ProductController extends Controller
             ? Brand::find($validated['brand_id'])?->name
             : null;
 
-        DB::transaction(function () use ($validated, $brandName) {
+        DB::transaction(function () use ($validated, $brandName, $canSeeCost) {
             foreach ($validated['variants'] as $variant) {
                 $skuProvided = trim((string) ($variant['sku'] ?? '')) !== '';
+                $stockQuantity = (int) ($variant['stock_quantity'] ?? 0);
 
                 $product = Product::create([
                     'category_id'    => $validated['category_id'],
@@ -103,12 +106,26 @@ class ProductController extends Controller
                     'selling_price'  => $validated['selling_price'],
                     'mrp'            => $validated['mrp'] ?? null,
                     'tax_percent'    => $validated['tax_percent'] ?? 0,
+                    'stock_quantity' => $stockQuantity,
                     'alert_quantity' => $validated['alert_quantity'],
                     'description'    => $validated['description'] ?? null,
                 ]);
 
                 if (!$skuProvided) {
                     $product->update(['sku' => $this->generateSku($product->id)]);
+                }
+
+                if ($stockQuantity > 0) {
+                    StockMovement::create([
+                        'product_id'   => $product->id,
+                        'user_id'      => auth()->id(),
+                        'type'         => 'in',
+                        'quantity'     => $stockQuantity,
+                        'stock_before' => 0,
+                        'stock_after'  => $stockQuantity,
+                        'purchase_price' => $canSeeCost ? ($validated['purchase_price'] ?? 0) : null,
+                        'notes'        => 'Initial stock at product creation',
+                    ]);
                 }
             }
         });

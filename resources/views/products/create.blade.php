@@ -4,7 +4,7 @@
 
 @php
     $variantRows = old('variants', [
-        ['size' => '', 'color' => '', 'sku' => '', 'item_code' => '', 'barcode' => ''],
+        ['size' => '', 'color' => '', 'sku' => '', 'item_code' => '', 'barcode' => '', 'stock_quantity' => ''],
     ]);
 @endphp
 
@@ -114,14 +114,14 @@
                             <div id="variantsContainer">
                                 @foreach($variantRows as $i => $v)
                                 <div class="row g-2 align-items-start variant-row border rounded p-2 mb-2 mx-0">
-                                    <div class="col-md-3">
+                                    <div class="col-md-2">
                                         <label class="form-label small mb-1">Size</label>
                                         <input type="text" name="variants[{{ $i }}][size]"
                                             class="form-control form-control-sm @error('variants.'.$i.'.size') is-invalid @enderror"
                                             value="{{ $v['size'] ?? '' }}" placeholder="e.g. 8">
                                         @error('variants.'.$i.'.size')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-2">
                                         <label class="form-label small mb-1">Color</label>
                                         <input type="text" name="variants[{{ $i }}][color]"
                                             class="form-control form-control-sm @error('variants.'.$i.'.color') is-invalid @enderror"
@@ -148,6 +148,13 @@
                                             class="form-control form-control-sm @error('variants.'.$i.'.barcode') is-invalid @enderror"
                                             value="{{ $v['barcode'] ?? '' }}" placeholder="optional">
                                         @error('variants.'.$i.'.barcode')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label small mb-1">Stock Qty</label>
+                                        <input type="number" name="variants[{{ $i }}][stock_quantity]"
+                                            class="form-control form-control-sm @error('variants.'.$i.'.stock_quantity') is-invalid @enderror"
+                                            value="{{ $v['stock_quantity'] ?? '' }}" min="0" placeholder="0">
+                                        @error('variants.'.$i.'.stock_quantity')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
                                     <div class="col-md-1 pt-4 text-end">
                                         <button type="button" class="btn btn-sm btn-outline-danger remove-variant-btn" title="Remove this variant">
@@ -181,11 +188,11 @@
 
     function rowHtml(index) {
         return '' +
-            '<div class="col-md-3">' +
+            '<div class="col-md-2">' +
                 '<label class="form-label small mb-1">Size</label>' +
                 '<input type="text" name="variants[' + index + '][size]" class="form-control form-control-sm" placeholder="e.g. 8">' +
             '</div>' +
-            '<div class="col-md-3">' +
+            '<div class="col-md-2">' +
                 '<label class="form-label small mb-1">Color</label>' +
                 '<input type="text" name="variants[' + index + '][color]" class="form-control form-control-sm" placeholder="e.g. Black">' +
             '</div>' +
@@ -200,6 +207,10 @@
             '<div class="col-md-1">' +
                 '<label class="form-label small mb-1">Barcode</label>' +
                 '<input type="text" name="variants[' + index + '][barcode]" class="form-control form-control-sm" placeholder="optional">' +
+            '</div>' +
+            '<div class="col-md-2">' +
+                '<label class="form-label small mb-1">Stock Qty</label>' +
+                '<input type="number" name="variants[' + index + '][stock_quantity]" class="form-control form-control-sm" min="0" placeholder="0">' +
             '</div>' +
             '<div class="col-md-1 pt-4 text-end">' +
                 '<button type="button" class="btn btn-sm btn-outline-danger remove-variant-btn" title="Remove this variant">' +
