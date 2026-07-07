@@ -68,8 +68,8 @@
                             {{ $m->type === 'in' ? 'IN' : ($m->type === 'out' ? 'OUT' : 'ADJUSTMENT') }}
                         </span>
                     </td>
-                    <td class="fw-bold {{ $m->type === 'in' ? 'text-success' : 'text-danger' }}">
-                        {{ $m->type === 'in' ? '+' : '-' }}{{ $m->quantity }}
+                    <td class="fw-bold {{ $m->stock_after >= $m->stock_before ? 'text-success' : 'text-danger' }}">
+                        {{ $m->stock_after >= $m->stock_before ? '+' : '' }}{{ $m->stock_after - $m->stock_before }}
                     </td>
                     <td class="text-muted">{{ $m->stock_before }}</td>
                     <td class="fw-bold">{{ $m->stock_after }}</td>

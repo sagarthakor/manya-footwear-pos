@@ -46,6 +46,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/stock',                        [StockController::class, 'index'])->name('stock.index');
     Route::get('/stock/add',                    [StockController::class, 'addStock'])->name('stock.add');
     Route::post('/stock/add',                   [StockController::class, 'processAddStock'])->name('stock.process');
+    Route::get('/stock/adjust',                 [StockController::class, 'adjustStock'])->name('stock.adjust');
+    Route::post('/stock/adjust',                [StockController::class, 'processAdjustStock'])->name('stock.adjust.process');
 
     // ── API endpoints (all roles) ──────────────────────────────────────────────
     Route::get('/api/product-by-barcode',       [ProductController::class, 'getByBarcode'])->name('products.by-barcode');

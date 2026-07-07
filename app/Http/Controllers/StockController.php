@@ -72,6 +72,50 @@ class StockController extends Controller
         return back()->with('success', 'Stock updated! Added ' . $validated['quantity'] . ' unit(s) for ' . $product->name . '.');
     }
 
+    public function adjustStock()
+    {
+        abort_unless(auth()->user()->can('adjust stock'), 403);
+        return view('stock.adjust');
+    }
+
+    public function processAdjustStock(Request $request)
+    {
+        abort_unless(auth()->user()->can('adjust stock'), 403);
+        $validated = $request->validate([
+            'product_id'   => 'required|integer|exists:products,id',
+            'new_quantity' => 'required|integer|min:0',
+            'notes'        => 'required|string|max:500',
+        ]);
+
+        $product = Product::where('id', $validated['product_id'])->where('is_active', true)->first();
+        if (!$product) {
+            return back()->with('error', 'Product not found.');
+        }
+
+        $stockBefore = $product->stock_quantity;
+        $diff = $validated['new_quantity'] - $stockBefore;
+
+        if ($diff === 0) {
+            return back()->with('error', 'New quantity is same as current stock. No adjustment made.');
+        }
+
+        DB::transaction(function () use ($product, $validated, $stockBefore, $diff) {
+            $product->update(['stock_quantity' => $validated['new_quantity']]);
+            StockMovement::create([
+                'product_id'   => $product->id,
+                'user_id'      => auth()->id(),
+                'type'         => 'adjustment',
+                'quantity'     => $diff,
+                'stock_before' => $stockBefore,
+                'stock_after'  => $validated['new_quantity'],
+                'notes'        => $validated['notes'],
+            ]);
+        });
+
+        $sign = $diff > 0 ? '+' . $diff : (string) $diff;
+        return back()->with('success', "Stock adjusted for {$product->name}: {$sign} (now {$validated['new_quantity']} units).");
+    }
+
     public function getProductByBarcode(Request $request)
     {
         $product = Product::with('category')
