@@ -8,11 +8,11 @@
         body {
             font-family: 'Courier New', Courier, monospace;
             font-size: 11px;
-            width: 80mm;
+            width: 70mm;
             margin: 0 auto;
             background: #fff;
             color: #000;
-            padding: 4mm 3mm;
+            padding: 4mm 2mm;
         }
         .separator        { border-top: 1px dashed #000; margin: 3mm 0; }
         .double-separator { border-top: 2px solid #000; margin: 3mm 0; }
@@ -57,7 +57,7 @@
         .footer      { text-align: center; font-size: 9.5px; margin-top: 3mm; }
 
         @media print {
-            body { width: 80mm; }
+            body { width: 70mm; margin: 0 auto; }
             .no-print { display: none; }
             @page { margin: 0; size: 80mm auto; }
         }
