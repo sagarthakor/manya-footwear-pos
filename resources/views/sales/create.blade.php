@@ -300,7 +300,7 @@ function makeProductCard(product) {
         '<div class="product-card" onclick="addToCartFromGrid(' + product.id + ')">' +
         '<div class="fw-semibold">' + product.name + '</div>' +
         (detail ? '<div class="text-muted small">' + detail + '</div>' : '') +
-        '<div class="text-muted small font-monospace">' + (product.item_code ? 'Item: ' + product.item_code + '  ' : '') + product.barcode + '</div>' +
+        '<div class="text-muted small font-monospace">' + (product.item_code ? 'Item: ' + product.item_code + '  ' : '') + (product.barcode || '') + '</div>' +
         '<div class="d-flex justify-content-between align-items-center mt-2">' +
         '<div>' +
         '<span class="price">&#8377;' + parseFloat(product.selling_price).toFixed(0) + '</span>' +
