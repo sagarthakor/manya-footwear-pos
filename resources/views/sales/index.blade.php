@@ -23,8 +23,10 @@
             <div class="col-md-3">
                 <button type="submit" class="btn btn-sm btn-outline-primary">Filter</button>
                 <a href="{{ route('sales.index') }}" class="btn btn-sm btn-outline-secondary ms-1">All</a>
+                @module('report_daily')
                 <a href="{{ route('reports.daily', ['date' => request('date', today()->format('Y-m-d'))]) }}"
                     class="btn btn-sm btn-outline-info ms-1">Daily Report</a>
+                @endmodule
             </div>
         </form>
     </div>

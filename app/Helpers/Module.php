@@ -21,6 +21,18 @@ class Module
         self::$cache = [];
     }
 
+    // True if at least one report module is enabled — drives the
+    // 'view reports' permission and report-related UI visibility
+    public static function anyReportActive(): bool
+    {
+        foreach (self::definitions() as $key => $info) {
+            if ($info['group'] === 'Reports' && self::isActive($key)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static function definitions(): array
     {
         return [

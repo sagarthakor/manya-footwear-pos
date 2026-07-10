@@ -498,7 +498,7 @@
 </div>
 
 {{-- ── ANALYTICS ROW ─────────────────────────────────────────── --}}
-@can('view reports')
+@if(auth()->user()->can('view reports') && \App\Helpers\Module::anyReportActive())
 <div class="row g-3 mb-4">
 
     {{-- Top Products --}}
@@ -590,12 +590,12 @@
     </div>
 
 </div>
-@endcan
+@endif
 
 {{-- ── BOTTOM ROW: Brands + Customers + Returns ─────────────── --}}
 <div class="row g-3 mb-4">
 
-    @can('view reports')
+    @if(auth()->user()->can('view reports') && \App\Helpers\Module::anyReportActive())
     {{-- Top Brands --}}
     <div class="col-md-4">
         <div class="card border-0 shadow-sm h-100">
@@ -615,7 +615,7 @@
             </div>
         </div>
     </div>
-    @endcan
+    @endif
 
     {{-- Top Customers --}}
     @module('customers')
@@ -653,7 +653,7 @@
 
     {{-- Monthly chart or Recent Returns --}}
     @php
-        $showPurchasesChart = \App\Helpers\Module::isActive('purchases') && isset($monthlyChart) && auth()->user()->can('view purchases') && auth()->user()->can('view reports');
+        $showPurchasesChart = \App\Helpers\Module::isActive('purchases') && \App\Helpers\Module::anyReportActive() && isset($monthlyChart) && auth()->user()->can('view purchases') && auth()->user()->can('view reports');
         $showRecentReturns  = \App\Helpers\Module::isActive('sale_returns') && auth()->user()->can('process sale returns');
     @endphp
 

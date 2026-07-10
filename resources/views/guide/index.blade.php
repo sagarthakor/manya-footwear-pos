@@ -164,17 +164,32 @@ en: {
         "Use the date filter daily to reconcile cash collections."
       ]
     },
+    @if(\App\Helpers\Module::anyReportActive())
     { id:"reports", icon:"bi-graph-up-arrow", bg:"linear-gradient(135deg,#1abc9c,#148f77)", nav:"Reports",
       title:"Reports", desc:"Analyse business performance with detailed reports",
       steps:[
         "Go to the <strong>Reports</strong> section in the sidebar (requires <em>view reports</em> permission).",
+        @if(\App\Helpers\Module::isActive('report_daily'))
         "<strong>Daily Report</strong>: Day-wise sales totals and payment method breakdown.",
+        @endif
+        @if(\App\Helpers\Module::isActive('report_monthly'))
         "<strong>Monthly Report</strong>: Month-by-month sales comparison.",
+        @endif
+        @if(\App\Helpers\Module::isActive('report_inventory'))
         "<strong>Inventory Report</strong>: Current stock levels, stock value, and low-stock items.",
+        @endif
+        @if(\App\Helpers\Module::isActive('report_profit_loss'))
         "<strong>Profit & Loss</strong>: Revenue vs purchase cost vs expenses — actual profit.",
+        @endif
+        @if(\App\Helpers\Module::isActive('report_gst'))
         "<strong>GST Report</strong>: Tax collected on sales — use for tax filing.",
+        @endif
+        @if(\App\Helpers\Module::isActive('report_cashier'))
         "<strong>Cashier Report</strong>: Individual sales performance per staff member.",
+        @endif
+        @if(\App\Helpers\Module::isActive('report_stock_movement'))
         "<strong>Stock Movement</strong>: Complete history of all stock additions and adjustments.",
+        @endif
         "Press <strong>Ctrl+P</strong> in the browser to print or save any report as PDF."
       ],
       tips:[
@@ -182,6 +197,7 @@ en: {
         "Purchase price data is only shown to users with <em>view purchase price</em> permission."
       ]
     },
+    @endif
     { id:"users", icon:"bi-shield-lock-fill", bg:"linear-gradient(135deg,#6f42c1,#5a32a3)", nav:"Users & Roles",
       title:"Users & Roles", desc:"Manage staff accounts and control access",
       steps:[
@@ -313,17 +329,32 @@ hi: {
         "Date filter से रोज का cash collection check करें।"
       ]
     },
+    @if(\App\Helpers\Module::anyReportActive())
     { id:"reports", icon:"bi-graph-up-arrow", bg:"linear-gradient(135deg,#1abc9c,#148f77)", nav:"Reports",
       title:"Reports", desc:"Detailed reports से business performance analyze करें",
       steps:[
         "Sidebar में <strong>Reports</strong> section पर जाएं (<em>view reports</em> permission जरूरी)।",
+        @if(\App\Helpers\Module::isActive('report_daily'))
         "<strong>Daily Report</strong>: हर दिन की sales total और payment method breakdown।",
+        @endif
+        @if(\App\Helpers\Module::isActive('report_monthly'))
         "<strong>Monthly Report</strong>: महीने-दर-महीने sales comparison।",
+        @endif
+        @if(\App\Helpers\Module::isActive('report_inventory'))
         "<strong>Inventory Report</strong>: मौजूदा stock levels, stock value, और low-stock items।",
+        @endif
+        @if(\App\Helpers\Module::isActive('report_profit_loss'))
         "<strong>Profit & Loss</strong>: Revenue vs purchase cost vs expenses — असली मुनाफा।",
+        @endif
+        @if(\App\Helpers\Module::isActive('report_gst'))
         "<strong>GST Report</strong>: Sales पर collect किया गया tax — tax filing के लिए।",
+        @endif
+        @if(\App\Helpers\Module::isActive('report_cashier'))
         "<strong>Cashier Report</strong>: हर staff member की individual sales performance।",
+        @endif
+        @if(\App\Helpers\Module::isActive('report_stock_movement'))
         "<strong>Stock Movement</strong>: सभी stock changes का पूरा इतिहास।",
+        @endif
         "Browser का <strong>Ctrl+P</strong> use करके कोई भी report print या PDF save करें।"
       ],
       tips:[
@@ -331,6 +362,7 @@ hi: {
         "Purchase price data सिर्फ <em>view purchase price</em> permission वाले देख सकते हैं।"
       ]
     },
+    @endif
     { id:"users", icon:"bi-shield-lock-fill", bg:"linear-gradient(135deg,#6f42c1,#5a32a3)", nav:"Users & Roles",
       title:"Users & Roles", desc:"Staff accounts manage करें और access control करें",
       steps:[
@@ -462,17 +494,32 @@ gu: {
         "Date filter थी रोजनुं cash collection check करो."
       ]
     },
+    @if(\App\Helpers\Module::anyReportActive())
     { id:"reports", icon:"bi-graph-up-arrow", bg:"linear-gradient(135deg,#1abc9c,#148f77)", nav:"Reports",
       title:"Reports", desc:"Detailed reports थी business performance analyze करो",
       steps:[
         "Sidebar मां <strong>Reports</strong> section पर जाओ (<em>view reports</em> permission जरूरी).",
+        @if(\App\Helpers\Module::isActive('report_daily'))
         "<strong>Daily Report</strong>: दररोज नुं sales total अने payment method breakdown.",
+        @endif
+        @if(\App\Helpers\Module::isActive('report_monthly'))
         "<strong>Monthly Report</strong>: महिना-दर-महिना sales comparison.",
+        @endif
+        @if(\App\Helpers\Module::isActive('report_inventory'))
         "<strong>Inventory Report</strong>: हालना stock levels, stock value, अने low-stock items.",
+        @endif
+        @if(\App\Helpers\Module::isActive('report_profit_loss'))
         "<strong>Profit & Loss</strong>: Revenue vs purchase cost vs expenses — असली नफो.",
+        @endif
+        @if(\App\Helpers\Module::isActive('report_gst'))
         "<strong>GST Report</strong>: Sales पर collect थयेलो tax — tax filing माते.",
+        @endif
+        @if(\App\Helpers\Module::isActive('report_cashier'))
         "<strong>Cashier Report</strong>: दरेक staff member नां individual sales.",
+        @endif
+        @if(\App\Helpers\Module::isActive('report_stock_movement'))
         "<strong>Stock Movement</strong>: बधां stock changes नो पूरो इतिहास.",
+        @endif
         "Browser नो <strong>Ctrl+P</strong> वापरीने कोई पण report print या PDF save करो."
       ],
       tips:[
@@ -480,6 +527,7 @@ gu: {
         "Purchase price data फक्त <em>view purchase price</em> permission वाळा जोई शके."
       ]
     },
+    @endif
     { id:"users", icon:"bi-shield-lock-fill", bg:"linear-gradient(135deg,#6f42c1,#5a32a3)", nav:"Users & Roles",
       title:"Users & Roles", desc:"Staff accounts manage करो अने access control करो",
       steps:[

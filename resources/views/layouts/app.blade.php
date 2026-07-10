@@ -395,16 +395,7 @@
 
         {{-- ── Reports Section ─────────────────────────────────────── --}}
         @if($user->can('view reports'))
-        @php
-            $anyReport = \App\Helpers\Module::isActive('report_daily')
-                      || \App\Helpers\Module::isActive('report_monthly')
-                      || \App\Helpers\Module::isActive('report_profit_loss')
-                      || \App\Helpers\Module::isActive('report_gst')
-                      || \App\Helpers\Module::isActive('report_inventory')
-                      || \App\Helpers\Module::isActive('report_cashier')
-                      || \App\Helpers\Module::isActive('report_stock_movement');
-        @endphp
-        @if($anyReport)
+        @if(\App\Helpers\Module::anyReportActive())
         <div class="nav-section">Reports</div>
         @endif
         @module('report_daily')

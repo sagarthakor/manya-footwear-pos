@@ -128,7 +128,10 @@ class RoleController extends Controller
     {
         $disabled = [];
         foreach (self::$modulePermissions as $key => $perms) {
-            if (!Module::isActive($key)) {
+            $active = $key === 'reports'
+                ? Module::anyReportActive()
+                : Module::isActive($key);
+            if (!$active) {
                 array_push($disabled, ...$perms);
             }
         }

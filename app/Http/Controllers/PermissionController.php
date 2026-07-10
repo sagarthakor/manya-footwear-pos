@@ -26,7 +26,10 @@ class PermissionController extends Controller
         // Filter out permissions belonging to disabled modules
         $disabledPerms = [];
         foreach (self::$modulePermissions as $moduleKey => $perms) {
-            if (!\App\Helpers\Module::isActive($moduleKey)) {
+            $active = $moduleKey === 'reports'
+                ? \App\Helpers\Module::anyReportActive()
+                : \App\Helpers\Module::isActive($moduleKey);
+            if (!$active) {
                 array_push($disabledPerms, ...$perms);
             }
         }
