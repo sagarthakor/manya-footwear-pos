@@ -25,9 +25,13 @@
         @media print {
             .no-print { display: none; }
             body { background: #fff; }
-            .labels-container { padding: 5mm; }
-            .label { border: 1px dashed #999; }
-            @page { margin: 5mm; }
+            .labels-container { padding: 0; display: block; }
+            .label {
+                border: none; width: 60mm; height: 30mm;
+                margin: 0 auto; page-break-after: always; page-break-inside: avoid;
+            }
+            .label:last-child { page-break-after: auto; }
+            @page { size: 60mm 30mm; margin: 0; }
         }
     </style>
 </head>

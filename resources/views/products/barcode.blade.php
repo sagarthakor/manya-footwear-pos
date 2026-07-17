@@ -38,14 +38,15 @@
         body * { visibility: hidden; }
         #printArea, #printArea * { visibility: visible; }
         #printArea { position: fixed; top: 0; left: 0; width: 100%; }
-        .print-label { display: inline-block; width: 60mm; border: 1px dashed #999; padding: 3mm; text-align: center; font-family: Arial, sans-serif; page-break-inside: avoid; margin: 2mm; }
+        .print-label { display: block; width: 60mm; height: 30mm; box-sizing: border-box; border: none; padding: 3mm; text-align: center; font-family: Arial, sans-serif; page-break-inside: avoid; page-break-after: always; margin: 0 auto; }
+        .print-label:last-child { page-break-after: auto; }
         .print-label .shop  { font-size: 8px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
         .print-label .pname { font-size: 8.5px; font-weight: bold; max-width: 54mm; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; margin: 1.5mm 0; }
         .print-label .pmeta { font-size: 7.5px; color: #444; }
         .print-label .pprice { font-size: 12px; font-weight: bold; margin: 1.5mm 0; }
         .print-label .bimg  { max-width: 54mm; height: 18mm; display: block; margin: 0 auto; }
         .print-label .bnum  { font-size: 7px; font-family: 'Courier New'; letter-spacing: 1px; margin-top: 1mm; }
-        @page { margin: 5mm; size: A4; }
+        @page { size: 60mm 30mm; margin: 0; }
     }
 </style>
 @endpush
