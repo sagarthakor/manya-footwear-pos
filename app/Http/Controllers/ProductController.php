@@ -281,7 +281,9 @@ class ProductController extends Controller
 
     public function barcodeLabel(Product $product)
     {
-        return view('products.barcode', compact('product'));
+        $barcodeImage = $product->barcode ? \App\Models\Barcode::toBase64Image($product->barcode) : null;
+
+        return view('products.barcode', compact('product', 'barcodeImage'));
     }
 
     public function getByBarcode(Request $request)

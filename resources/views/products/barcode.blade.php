@@ -215,6 +215,7 @@
 var product = {
     name:          {!! json_encode($product->name) !!},
     barcode:       {!! json_encode($product->barcode) !!},
+    barcodeImg:    {!! json_encode($barcodeImage) !!},
     selling_price: {{ (float) $product->selling_price }},
     size:          {!! json_encode($product->size) !!},
     color:         {!! json_encode($product->color) !!}
@@ -250,7 +251,7 @@ function printLabels() {
             '<div class="pname">' + name + '</div>' +
             (detail ? '<div class="pmeta">' + detail + '</div>' : '') +
             '<div class="pprice">&#8377;' + priceInt + '</div>' +
-            '<img class="bimg" src="/barcode/image/' + encodeURIComponent(product.barcode) + '" alt="barcode">' +
+            '<img class="bimg" src="' + product.barcodeImg + '" alt="barcode">' +
             '<div class="bnum">' + product.barcode + '</div>' +
             '</div>';
     }

@@ -111,7 +111,13 @@ class BarcodeController extends Controller
     {
         $request->validate(['barcode_ids' => 'required|array']);
         $barcodes = Barcode::with('product')->whereIn('id', $request->barcode_ids)->get();
-        return view('barcodes.print-labels', compact('barcodes'));
+
+        $barcodeImages = [];
+        foreach ($barcodes as $item) {
+            $barcodeImages[$item->barcode] = Barcode::toBase64Image($item->barcode);
+        }
+
+        return view('barcodes.print-labels', compact('barcodes', 'barcodeImages'));
     }
 
     // Legacy: print labels from product_ids (used by products index page)
@@ -119,7 +125,15 @@ class BarcodeController extends Controller
     {
         $request->validate(['product_ids' => 'required|array']);
         $products = Product::whereIn('id', $request->product_ids)->get();
-        return view('barcodes.print', compact('products'));
+
+        $barcodeImages = [];
+        foreach ($products as $product) {
+            if ($product->barcode) {
+                $barcodeImages[$product->barcode] = Barcode::toBase64Image($product->barcode);
+            }
+        }
+
+        return view('barcodes.print', compact('products', 'barcodeImages'));
     }
 
     public function image(string $barcode)

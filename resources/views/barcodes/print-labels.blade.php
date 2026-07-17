@@ -83,7 +83,7 @@
             <div class="no-product">Unassigned</div>
         @endif
         <img class="barcode-img"
-            src="{{ route('barcode.image', $item->barcode) }}"
+            src="{{ $barcodeImages[$item->barcode] ?? '' }}"
             alt="{{ $item->barcode }}">
         <div class="barcode-num">{{ $item->barcode }}</div>
     </div>
@@ -95,6 +95,7 @@ var labelsData = [];
 @foreach($barcodes as $item)
 labelsData.push({
     barcode:       {{ json_encode($item->barcode) }},
+    barcodeImg:    {{ json_encode($barcodeImages[$item->barcode] ?? '') }},
     productName:   {{ json_encode($item->product_id ? $item->product->name : null) }},
     sellingPrice:  {{ $item->product_id ? $item->product->selling_price : 0 }},
     size:          {{ json_encode($item->product_id ? $item->product->size : null) }},
@@ -126,7 +127,7 @@ function generateLabels() {
                         : '<div class="no-product">Unassigned</div>') +
                     (detail ? '<div class="product-detail">' + detail + '</div>' : '') +
                     (d.sellingPrice ? '<div class="price">&#8377;' + Math.round(d.sellingPrice) + '</div>' : '') +
-                    '<img class="barcode-img" src="/barcode/image/' + encodeURIComponent(d.barcode) + '" alt="' + d.barcode + '">' +
+                    '<img class="barcode-img" src="' + d.barcodeImg + '" alt="' + d.barcode + '">' +
                     '<div class="barcode-num">' + d.barcode + '</div>' +
                 '</div>';
         }

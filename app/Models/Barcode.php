@@ -22,4 +22,12 @@ class Barcode extends Model
             default    => 'light',
         };
     }
+
+    public static function toBase64Image(string $code): string
+    {
+        $generator = new \Picqer\Barcode\BarcodeGeneratorPNG();
+        $png = $generator->getBarcode($code, $generator::TYPE_CODE_128, 3, 60);
+
+        return 'data:image/png;base64,' . base64_encode($png);
+    }
 }

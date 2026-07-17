@@ -75,7 +75,7 @@
         @endif
         <div class="price">&#8377;{{ number_format($product->selling_price, 0) }}</div>
         <img class="barcode-img"
-            src="{{ route('barcode.image', $product->barcode) }}"
+            src="{{ $barcodeImages[$product->barcode] ?? '' }}"
             alt="{{ $product->barcode }}">
         <div class="barcode-num">{{ $product->barcode }}</div>
     </div>
@@ -89,6 +89,7 @@ productsData.push({
     id: {{ $product->id }},
     name: {{ json_encode($product->name) }},
     barcode: {{ json_encode($product->barcode) }},
+    barcodeImg: {{ json_encode($barcodeImages[$product->barcode] ?? '') }},
     selling_price: {{ $product->selling_price }},
     size: {{ json_encode($product->size) }},
     color: {{ json_encode($product->color) }}
@@ -116,7 +117,7 @@ function generateLabels() {
                     '<div class="product-name" title="' + p.name + '">' + name + '</div>' +
                     (detail ? '<div class="product-detail">' + detail + '</div>' : '') +
                     '<div class="price">&#8377;' + priceInt + '</div>' +
-                    '<img class="barcode-img" src="/barcode/image/' + p.barcode + '" alt="' + p.barcode + '">' +
+                    '<img class="barcode-img" src="' + p.barcodeImg + '" alt="' + p.barcode + '">' +
                     '<div class="barcode-num">' + p.barcode + '</div>' +
                 '</div>';
         }
