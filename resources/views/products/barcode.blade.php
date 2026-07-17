@@ -38,14 +38,19 @@
         body * { visibility: hidden; }
         #printArea, #printArea * { visibility: visible; }
         #printArea { position: fixed; top: 0; left: 0; width: 100%; }
-        .print-label { display: block; width: 60mm; height: 30mm; box-sizing: border-box; border: none; padding: 3mm; text-align: center; font-family: Arial, sans-serif; page-break-inside: avoid; page-break-after: always; margin: 0 auto; }
+        .print-label {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            width: 60mm; height: 30mm; box-sizing: border-box; border: none; padding: 1.5mm;
+            text-align: center; font-family: Arial, sans-serif; overflow: hidden;
+            page-break-inside: avoid; page-break-after: always; margin: 0 auto;
+        }
         .print-label:last-child { page-break-after: auto; }
-        .print-label .shop  { font-size: 8px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
-        .print-label .pname { font-size: 8.5px; font-weight: bold; max-width: 54mm; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; margin: 1.5mm 0; }
-        .print-label .pmeta { font-size: 7.5px; color: #444; }
-        .print-label .pprice { font-size: 12px; font-weight: bold; margin: 1.5mm 0; }
-        .print-label .bimg  { max-width: 54mm; height: 18mm; display: block; margin: 0 auto; }
-        .print-label .bnum  { font-size: 7px; font-family: 'Courier New'; letter-spacing: 1px; margin-top: 1mm; }
+        .print-label .shop  { font-size: 2.2mm; line-height: 1.1; font-weight: bold; text-transform: uppercase; letter-spacing: 0.3mm; }
+        .print-label .pname { font-size: 2mm; line-height: 1.1; font-weight: bold; max-width: 56mm; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; margin: 0.4mm 0; }
+        .print-label .pmeta { font-size: 1.8mm; line-height: 1.1; color: #444; }
+        .print-label .pprice { font-size: 3mm; line-height: 1.1; font-weight: bold; margin: 0.4mm 0; }
+        .print-label .bimg  { max-width: 56mm; height: 13mm; display: block; margin: 0 auto; }
+        .print-label .bnum  { font-size: 1.8mm; line-height: 1.1; font-family: 'Courier New'; letter-spacing: 0.2mm; margin-top: 0.3mm; }
         @page { size: 60mm 30mm; margin: 0; }
     }
 </style>

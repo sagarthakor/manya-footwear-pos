@@ -14,16 +14,17 @@
         .label {
             width: 60mm; height: 30mm; background: #fff; border: 1px solid #ddd;
             display: flex; flex-direction: column; align-items: center;
-            justify-content: center; padding: 3mm; text-align: center;
+            justify-content: center; padding: 1.5mm; text-align: center;
+            overflow: hidden;
             page-break-inside: avoid;
         }
-        .label .shop-name   { font-size: 8px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; color: #333; }
-        .label .product-name { font-size: 7.5px; font-weight: bold; margin: 1mm 0; max-width: 54mm; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .label .product-detail { font-size: 7px; color: #555; }
-        .label .price       { font-size: 11px; font-weight: bold; color: #e74c3c; margin: 1mm 0; }
-        .label .barcode-img { max-width: 54mm; height: 18mm; }
-        .label .barcode-num { font-size: 7px; font-family: 'Courier New', monospace; color: #555; }
-        .label .no-product  { font-size: 7px; color: #999; font-style: italic; }
+        .label .shop-name   { font-size: 2.2mm; line-height: 1.1; font-weight: bold; text-transform: uppercase; letter-spacing: 0.3mm; color: #333; }
+        .label .product-name { font-size: 2mm; line-height: 1.1; font-weight: bold; margin: 0.4mm 0; max-width: 56mm; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .label .product-detail { font-size: 1.8mm; line-height: 1.1; color: #555; }
+        .label .price       { font-size: 3mm; line-height: 1.1; font-weight: bold; color: #e74c3c; margin: 0.4mm 0; }
+        .label .barcode-img { max-width: 56mm; height: 13mm; }
+        .label .barcode-num { font-size: 1.8mm; line-height: 1.1; font-family: 'Courier New', monospace; color: #555; letter-spacing: 0.2mm; }
+        .label .no-product  { font-size: 1.8mm; line-height: 1.1; color: #999; font-style: italic; }
         @media print {
             .no-print { display: none; }
             body { background: #fff; }
