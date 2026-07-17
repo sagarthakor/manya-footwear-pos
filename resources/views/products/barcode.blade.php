@@ -40,7 +40,7 @@
         #printArea { position: fixed; top: 0; left: 0; width: 100%; }
         .print-label {
             display: block;
-            width: 60mm; height: 30mm; box-sizing: border-box; border: none; padding: 1.5mm 2mm;
+            width: 60mm; height: 29mm; box-sizing: border-box; border: none; padding: 1.5mm 2mm;
             text-align: center; font-family: Arial, sans-serif; overflow: hidden;
             page-break-inside: avoid; page-break-after: always; margin: 0 auto;
         }

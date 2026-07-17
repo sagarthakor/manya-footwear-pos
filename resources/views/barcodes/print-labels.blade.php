@@ -29,7 +29,7 @@
             body { background: #fff; }
             .labels-container { padding: 0; display: block; }
             .label {
-                border: none; width: 60mm; height: 30mm;
+                border: none; width: 60mm; height: 29mm;
                 margin: 0 auto; page-break-after: always; page-break-inside: avoid;
             }
             .label:last-child { page-break-after: auto; }
