@@ -11,9 +11,8 @@
         .label {
             width: 60mm; height: 30mm;
             background: #fff; border: 1px solid #ddd;
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            padding: 0.5mm 2mm; text-align: center;
+            display: block;
+            padding: 1.5mm 2mm; text-align: center;
             overflow: hidden;
             page-break-inside: avoid;
         }
@@ -21,7 +20,7 @@
         .label .product-name { font-size: 1.8mm; line-height: 1; font-weight: bold; margin: 0.3mm 0; max-width: 56mm; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .label .product-detail { font-size: 1.6mm; line-height: 1; color: #555; }
         .label .price       { font-size: 2.6mm; line-height: 1; font-weight: bold; color: #e74c3c; margin: 0.3mm 0; }
-        .label .barcode-img { max-width: 56mm; height: 11mm; }
+        .label .barcode-img { display: block; margin: 0.3mm auto; max-width: 56mm; height: 11mm; }
         .label .barcode-num { font-size: 1.6mm; line-height: 1; font-family: 'Courier New', monospace; color: #555; letter-spacing: 0.2mm; }
         @media print {
             .no-print { display: none; }
