@@ -38,20 +38,24 @@
         body * { visibility: hidden; }
         #printArea, #printArea * { visibility: visible; }
         #printArea { position: fixed; top: 0; left: 0; width: 100%; }
+        .print-row {
+            display: flex; justify-content: center; gap: 3mm;
+            width: 104mm; height: 24mm; margin: 0 auto;
+            page-break-inside: avoid; page-break-after: always;
+        }
+        .print-row:last-child { page-break-after: auto; }
         .print-label {
             display: block;
-            width: 60mm; height: 29mm; box-sizing: border-box; border: none; padding: 1.5mm 2mm;
+            width: 50mm; height: 24mm; box-sizing: border-box; border: none; padding: 0.5mm 1.5mm;
             text-align: center; font-family: Arial, sans-serif; overflow: hidden;
-            page-break-inside: avoid; page-break-after: always; margin: 0 auto;
         }
-        .print-label:last-child { page-break-after: auto; }
         .print-label .shop  { font-size: 2mm; line-height: 1; font-weight: bold; text-transform: uppercase; letter-spacing: 0.3mm; }
-        .print-label .pname { font-size: 1.8mm; line-height: 1; font-weight: bold; max-width: 56mm; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; margin: 0.3mm 0; }
+        .print-label .pname { font-size: 1.8mm; line-height: 1; font-weight: bold; max-width: 47mm; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; margin: 0.3mm 0; }
         .print-label .pmeta { font-size: 1.6mm; line-height: 1; color: #444; }
-        .print-label .pprice { font-size: 2.6mm; line-height: 1; font-weight: bold; margin: 0.3mm 0; }
-        .print-label .bimg  { max-width: 56mm; height: 11mm; display: block; margin: 0 auto; }
+        .print-label .pprice { font-size: 2.4mm; line-height: 1; font-weight: bold; margin: 0.3mm 0; }
+        .print-label .bimg  { max-width: 47mm; height: 10mm; display: block; margin: 0 auto; }
         .print-label .bnum  { font-size: 1.6mm; line-height: 1; font-family: 'Courier New'; letter-spacing: 0.2mm; margin-top: 0.3mm; }
-        @page { size: 60mm 30mm; margin: 0; }
+        @page { size: 104mm 25mm; margin: 0; }
     }
 </style>
 @endpush
@@ -126,7 +130,7 @@
         <div class="card">
             <div class="card-header py-3">
                 <i class="bi bi-upc me-2"></i>Barcode Label Preview
-                <small class="text-muted ms-2">(60mm × 30mm — Standard label size)</small>
+                <small class="text-muted ms-2">(50mm × 25mm — 2-up label roll)</small>
             </div>
             <div class="card-body barcode-preview">
                 <p class="text-muted small mb-3">
@@ -243,19 +247,21 @@ function printLabels() {
     var priceInt = Math.round(product.selling_price);
     var name = product.name.length > 26 ? product.name.substring(0, 26) + '...' : product.name;
 
-    var labels = '';
-    for (var i = 0; i < qty; i++) {
-        labels +=
-            '<div class="print-label">' +
-            '<div class="shop">Mayank Footware</div>' +
-            '<div class="pname">' + name + '</div>' +
-            (detail ? '<div class="pmeta">' + detail + '</div>' : '') +
-            '<div class="pprice">&#8377;' + priceInt + '</div>' +
-            '<img class="bimg" src="' + product.barcodeImg + '" alt="barcode">' +
-            '<div class="bnum">' + product.barcode + '</div>' +
-            '</div>';
+    var labelHtml =
+        '<div class="print-label">' +
+        '<div class="shop">Mayank Footware</div>' +
+        '<div class="pname">' + name + '</div>' +
+        (detail ? '<div class="pmeta">' + detail + '</div>' : '') +
+        '<div class="pprice">&#8377;' + priceInt + '</div>' +
+        '<img class="bimg" src="' + product.barcodeImg + '" alt="barcode">' +
+        '<div class="bnum">' + product.barcode + '</div>' +
+        '</div>';
+
+    var rows = '';
+    for (var i = 0; i < qty; i += 2) {
+        rows += '<div class="print-row">' + labelHtml + ((i + 1 < qty) ? labelHtml : '') + '</div>';
     }
-    printArea.innerHTML = labels;
+    printArea.innerHTML = rows;
 
     setTimeout(function () { window.print(); }, 300);
     setTimeout(function () { printArea.style.display = 'none'; }, 2000);

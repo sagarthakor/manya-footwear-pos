@@ -7,31 +7,36 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: Arial, sans-serif; background: #f0f0f0; }
         .no-print { background: #2c3e50; color: #fff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; }
-        .labels-container { padding: 10px; display: flex; flex-wrap: wrap; gap: 5px; justify-content: flex-start; }
+        .labels-container { padding: 10px; }
+        .row {
+            display: flex; justify-content: center; gap: 3mm;
+            margin-bottom: 5px;
+        }
         .label {
-            width: 60mm; height: 30mm;
+            width: 50mm; height: 25mm;
             background: #fff; border: 1px solid #ddd;
             display: block;
-            padding: 1.5mm 2mm; text-align: center;
+            padding: 0.5mm 1.5mm; text-align: center;
             overflow: hidden;
-            page-break-inside: avoid;
         }
         .label .shop-name   { font-size: 2mm; line-height: 1; font-weight: bold; text-transform: uppercase; letter-spacing: 0.3mm; color: #333; }
-        .label .product-name { font-size: 1.8mm; line-height: 1; font-weight: bold; margin: 0.3mm 0; max-width: 56mm; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .label .product-name { font-size: 1.8mm; line-height: 1; font-weight: bold; margin: 0.3mm 0; max-width: 47mm; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .label .product-detail { font-size: 1.6mm; line-height: 1; color: #555; }
-        .label .price       { font-size: 2.6mm; line-height: 1; font-weight: bold; color: #e74c3c; margin: 0.3mm 0; }
-        .label .barcode-img { display: block; margin: 0.3mm auto; max-width: 56mm; height: 11mm; }
+        .label .price       { font-size: 2.4mm; line-height: 1; font-weight: bold; color: #e74c3c; margin: 0.3mm 0; }
+        .label .barcode-img { display: block; margin: 0.3mm auto; max-width: 47mm; height: 10mm; }
         .label .barcode-num { font-size: 1.6mm; line-height: 1; font-family: 'Courier New', monospace; color: #555; letter-spacing: 0.2mm; }
         @media print {
             .no-print { display: none; }
             body { background: #fff; }
-            .labels-container { padding: 0; display: block; }
-            .label {
-                border: none; width: 60mm; height: 29mm;
-                margin: 0 auto; page-break-after: always; page-break-inside: avoid;
+            .labels-container { padding: 0; }
+            .row {
+                width: 104mm; height: 24mm; margin: 0 auto;
+                page-break-after: always; page-break-inside: avoid;
+                gap: 3mm;
             }
-            .label:last-child { page-break-after: auto; }
-            @page { size: 60mm 30mm; margin: 0; }
+            .row:last-child { page-break-after: auto; }
+            .label { border: none; width: 50mm; height: 24mm; }
+            @page { size: 104mm 25mm; margin: 0; }
         }
     </style>
 </head>
@@ -62,22 +67,26 @@
 </div>
 
 <div class="labels-container" id="labelsContainer">
-    @foreach($products as $product)
-    <div class="label">
-        <div class="shop-name">Mayank Footware</div>
-        <div class="product-name" title="{{ $product->name }}">{{ Str::limit($product->name, 25) }}</div>
-        @if($product->size || $product->color)
-        <div class="product-detail">
-            {{ $product->size ? 'Size: '.$product->size : '' }}
-            {{ $product->size && $product->color ? ' | ' : '' }}
-            {{ $product->color ?? '' }}
+    @foreach($products->chunk(2) as $rowItems)
+    <div class="row">
+        @foreach($rowItems as $product)
+        <div class="label">
+            <div class="shop-name">Mayank Footware</div>
+            <div class="product-name" title="{{ $product->name }}">{{ Str::limit($product->name, 25) }}</div>
+            @if($product->size || $product->color)
+            <div class="product-detail">
+                {{ $product->size ? 'Size: '.$product->size : '' }}
+                {{ $product->size && $product->color ? ' | ' : '' }}
+                {{ $product->color ?? '' }}
+            </div>
+            @endif
+            <div class="price">&#8377;{{ number_format($product->selling_price, 0) }}</div>
+            <img class="barcode-img"
+                src="{{ $barcodeImages[$product->barcode] ?? '' }}"
+                alt="{{ $product->barcode }}">
+            <div class="barcode-num">{{ $product->barcode }}</div>
         </div>
-        @endif
-        <div class="price">&#8377;{{ number_format($product->selling_price, 0) }}</div>
-        <img class="barcode-img"
-            src="{{ $barcodeImages[$product->barcode] ?? '' }}"
-            alt="{{ $product->barcode }}">
-        <div class="barcode-num">{{ $product->barcode }}</div>
+        @endforeach
     </div>
     @endforeach
 </div>
@@ -96,32 +105,40 @@ productsData.push({
 });
 @endforeach
 
+function labelHtml(p) {
+    var detail = '';
+    if (p.size) detail += 'Size: ' + p.size;
+    if (p.size && p.color) detail += ' | ';
+    if (p.color) detail += p.color;
+
+    var name = p.name.length > 25 ? p.name.substring(0, 25) + '...' : p.name;
+    var priceInt = Math.round(p.selling_price);
+
+    return '<div class="label">' +
+            '<div class="shop-name">Mayank Footware</div>' +
+            '<div class="product-name" title="' + p.name + '">' + name + '</div>' +
+            (detail ? '<div class="product-detail">' + detail + '</div>' : '') +
+            '<div class="price">&#8377;' + priceInt + '</div>' +
+            '<img class="barcode-img" src="' + p.barcodeImg + '" alt="' + p.barcode + '">' +
+            '<div class="barcode-num">' + p.barcode + '</div>' +
+        '</div>';
+}
+
 function generateLabels() {
     var copies = parseInt(document.getElementById('copiesInput').value) || 1;
     var container = document.getElementById('labelsContainer');
     container.innerHTML = '';
 
-    productsData.forEach(function(p) {
-        for (var i = 0; i < copies; i++) {
-            var detail = '';
-            if (p.size) detail += 'Size: ' + p.size;
-            if (p.size && p.color) detail += ' | ';
-            if (p.color) detail += p.color;
-
-            var name = p.name.length > 25 ? p.name.substring(0, 25) + '...' : p.name;
-            var priceInt = Math.round(p.selling_price);
-
-            container.innerHTML +=
-                '<div class="label">' +
-                    '<div class="shop-name">Mayank Footware</div>' +
-                    '<div class="product-name" title="' + p.name + '">' + name + '</div>' +
-                    (detail ? '<div class="product-detail">' + detail + '</div>' : '') +
-                    '<div class="price">&#8377;' + priceInt + '</div>' +
-                    '<img class="barcode-img" src="' + p.barcodeImg + '" alt="' + p.barcode + '">' +
-                    '<div class="barcode-num">' + p.barcode + '</div>' +
-                '</div>';
-        }
+    var allLabels = [];
+    productsData.forEach(function (p) {
+        for (var i = 0; i < copies; i++) allLabels.push(p);
     });
+
+    for (var j = 0; j < allLabels.length; j += 2) {
+        var rowHtml = labelHtml(allLabels[j]);
+        if (allLabels[j + 1]) rowHtml += labelHtml(allLabels[j + 1]);
+        container.innerHTML += '<div class="row">' + rowHtml + '</div>';
+    }
 }
 </script>
 </body>
