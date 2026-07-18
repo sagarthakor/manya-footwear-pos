@@ -22,7 +22,6 @@
         border-radius: 4px;
         box-shadow: 0 2px 8px rgba(0,0,0,.15);
     }
-    .label-card .shop { font-size: 9px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; color: #555; }
     .label-card .pname { font-size: 9px; font-weight: bold; margin: 2px 0; max-width: 52mm; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
     .label-card .pmeta { font-size: 8px; color: #666; margin-bottom: 2px; }
     .label-card .pprice { font-size: 13px; font-weight: bold; color: #e74c3c; margin: 2px 0; }
@@ -49,7 +48,6 @@
             width: 50mm; height: 24mm; box-sizing: border-box; border: none; padding: 0.5mm 1.5mm;
             text-align: center; font-family: Arial, sans-serif; overflow: hidden;
         }
-        .print-label .shop  { font-size: 2mm; line-height: 1; font-weight: bold; text-transform: uppercase; letter-spacing: 0.3mm; }
         .print-label .pname { font-size: 1.8mm; line-height: 1; font-weight: bold; max-width: 47mm; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; margin: 0.3mm 0; }
         .print-label .pmeta { font-size: 1.6mm; line-height: 1; color: #444; }
         .print-label .pprice { font-size: 2.4mm; line-height: 1; font-weight: bold; margin: 0.3mm 0; }
@@ -141,7 +139,6 @@
                 @if($product->barcode)
                 {{-- Single preview --}}
                 <div class="label-card">
-                    <div class="shop">Mayank Footware</div>
                     <div class="pname">{{ $product->name }}</div>
                     @if($product->size || $product->color)
                     <div class="pmeta">
@@ -249,7 +246,6 @@ function printLabels() {
 
     var labelHtml =
         '<div class="print-label">' +
-        '<div class="shop">Mayank Footware</div>' +
         '<div class="pname">' + name + '</div>' +
         (detail ? '<div class="pmeta">' + detail + '</div>' : '') +
         '<div class="pprice">&#8377;' + priceInt + '</div>' +

@@ -19,7 +19,6 @@
             padding: 0.5mm 1.5mm; text-align: center;
             overflow: hidden;
         }
-        .label .shop-name   { font-size: 2mm; line-height: 1; font-weight: bold; text-transform: uppercase; letter-spacing: 0.3mm; color: #333; }
         .label .product-name { font-size: 1.8mm; line-height: 1; font-weight: bold; margin: 0.3mm 0; max-width: 47mm; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .label .product-detail { font-size: 1.6mm; line-height: 1; color: #555; }
         .label .price       { font-size: 2.4mm; line-height: 1; font-weight: bold; color: #e74c3c; margin: 0.3mm 0; }
@@ -71,7 +70,6 @@
     <div class="row">
         @foreach($rowItems as $product)
         <div class="label">
-            <div class="shop-name">Mayank Footware</div>
             <div class="product-name" title="{{ $product->name }}">{{ Str::limit($product->name, 25) }}</div>
             @if($product->size || $product->color)
             <div class="product-detail">
@@ -115,7 +113,6 @@ function labelHtml(p) {
     var priceInt = Math.round(p.selling_price);
 
     return '<div class="label">' +
-            '<div class="shop-name">Mayank Footware</div>' +
             '<div class="product-name" title="' + p.name + '">' + name + '</div>' +
             (detail ? '<div class="product-detail">' + detail + '</div>' : '') +
             '<div class="price">&#8377;' + priceInt + '</div>' +

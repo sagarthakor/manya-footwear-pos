@@ -20,13 +20,11 @@
             display: block; padding: 0.5mm 1.5mm; text-align: center;
             overflow: hidden;
         }
-        .label .shop-name   { font-size: 2mm; line-height: 1; font-weight: bold; text-transform: uppercase; letter-spacing: 0.3mm; color: #333; }
         .label .product-name { font-size: 1.8mm; line-height: 1; font-weight: bold; margin: 0.3mm 0; max-width: 47mm; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .label .product-detail { font-size: 1.6mm; line-height: 1; color: #555; }
         .label .price       { font-size: 2.4mm; line-height: 1; font-weight: bold; color: #e74c3c; margin: 0.3mm 0; }
         .label .barcode-img { display: block; margin: 0.3mm auto; max-width: 47mm; height: 10mm; }
         .label .barcode-num { font-size: 1.6mm; line-height: 1; font-family: 'Courier New', monospace; color: #555; letter-spacing: 0.2mm; }
-        .label .no-product  { font-size: 1.6mm; line-height: 1; color: #999; font-style: italic; }
         @media print {
             .no-print { display: none; }
             body { background: #fff; }
@@ -73,7 +71,6 @@
     <div class="row">
         @foreach($rowItems as $item)
         <div class="label">
-            <div class="shop-name">Mayank Footware</div>
             @if($item->product_id)
                 <div class="product-name" title="{{ $item->product->name }}">
                     {{ Str::limit($item->product->name, 25) }}
@@ -86,8 +83,6 @@
                 </div>
                 @endif
                 <div class="price">&#8377;{{ number_format($item->product->selling_price, 0) }}</div>
-            @else
-                <div class="no-product">Unassigned</div>
             @endif
             <img class="barcode-img"
                 src="{{ $barcodeImages[$item->barcode] ?? '' }}"
@@ -123,10 +118,7 @@ function labelHtml(d) {
         : null;
 
     return '<div class="label">' +
-            '<div class="shop-name">Mayank Footware</div>' +
-            (name
-                ? '<div class="product-name">' + name + '</div>'
-                : '<div class="no-product">Unassigned</div>') +
+            (name ? '<div class="product-name">' + name + '</div>' : '') +
             (detail ? '<div class="product-detail">' + detail + '</div>' : '') +
             (d.sellingPrice ? '<div class="price">&#8377;' + Math.round(d.sellingPrice) + '</div>' : '') +
             '<img class="barcode-img" src="' + d.barcodeImg + '" alt="' + d.barcode + '">' +
